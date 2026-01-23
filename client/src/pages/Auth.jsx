@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const API_URL = "https://mr-pathfinder.onrender.com"; // Render backend URL
+
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
@@ -16,7 +18,9 @@ const Auth = () => {
     e.preventDefault();
     const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
     try {
-      const res = await axios.post(`http://localhost:5000${endpoint}`, formData, { withCredentials: true });
+      // Call Render backend instead of localhost
+      const res = await axios.post(`${API_URL}${endpoint}`, formData, { withCredentials: true });
+      
       if (res.data.success) {
         if (res.data.user.role === 'hr') navigate('/hr-dashboard');
         else navigate('/dashboard');
