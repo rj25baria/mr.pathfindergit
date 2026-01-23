@@ -9,8 +9,10 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+
+// ✅ CORS for Render frontend
 app.use(cors({
-  origin: 'https://mr-pathfinder-frontend.onrender.com', // Render frontend URL
+  origin: 'https://mr-pathfinder-frontend.onrender.com', // deployed frontend
   credentials: true
 }));
 
@@ -28,6 +30,7 @@ app.use('/api/roadmap', require('./routes/roadmapRoutes'));
 app.use('/api/hr', require('./routes/hrRoutes'));
 app.use('/api/feedback', require('./routes/feedbackRoutes'));
 
+// Test route
 app.get('/', (req, res) => {
   res.send('Mr. Pathfinder API is running');
 });
