@@ -10,6 +10,7 @@ const StudentDashboard = () => {
   const [activeRoadmap, setActiveRoadmap] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submissionModal, setSubmissionModal] = useState({ show: false, projectId: null, link: '' });
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();

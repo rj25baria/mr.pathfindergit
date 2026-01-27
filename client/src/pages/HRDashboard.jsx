@@ -23,6 +23,9 @@ const HRDashboard = () => {
       setCandidates(res.data.data);
     } catch (err) {
       console.error(err);
+      if (err.response?.status === 401) {
+        navigate('/auth');
+      }
     } finally {
       setLoading(false);
     }
