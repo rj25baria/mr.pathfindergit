@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://rj25baria.github.io/mr.pathfinder/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
