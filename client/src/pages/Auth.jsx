@@ -161,6 +161,23 @@ const Auth = () => {
           )}
         </button>
       </form>
+
+      <div className="mt-6 text-center border-t pt-4">
+        <button
+          onClick={async () => {
+             try {
+               await axios.get(`${API_URL}/api/auth/logout`);
+               window.location.reload();
+             } catch (e) {
+               window.location.reload();
+             }
+          }}
+          className="text-sm text-gray-500 underline hover:text-indigo-600"
+          type="button"
+        >
+          Trouble logging in? Click here to Reset Session
+        </button>
+      </div>
     </div>
   );
 };

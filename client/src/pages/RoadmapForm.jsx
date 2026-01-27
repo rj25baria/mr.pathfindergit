@@ -27,7 +27,11 @@ const RoadmapForm = () => {
       }
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || 'Failed to generate roadmap. Please try again.');
+      if (err.response?.status === 401) {
+        navigate('/auth');
+      } else {
+        alert(err.response?.data?.message || 'Failed to generate roadmap. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { CheckCircle, Circle, ExternalLink, Award, TrendingUp, Flame, Star, Calendar, Briefcase, Hammer } from 'lucide-react';
 import { API_URL } from '../config';
@@ -29,6 +29,9 @@ const StudentDashboard = () => {
       }
     } catch (err) {
       console.log(err);
+      if (err.response?.status === 401) {
+        navigate('/auth');
+      }
     } finally {
       setLoading(false);
     }
