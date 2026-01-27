@@ -9,22 +9,16 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(cors({
-  origin: 'http://localhost:5173', // Vite default port
+  origin: [
+    'http://localhost:5173',
+    'https://mr-pathfinder.vercel.app/',
+    'https://rj25baria.github.io',
+    process.env.FRONTEND_URL
+  ].filter(Boolean),
   credentials: true
 }));
-
-// Connect to MongoDB
-const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mr_pathfinder';
-
-mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-    // Don't crash the app, just log the error. The app can still serve requests using MockDB if configured.
-    console.log('Continuing without MongoDB connection...');
-  });
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -36,6 +30,20 @@ app.get('/', (req, res) => {
   res.send('Mr. Pathfinder API is running');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Connect to MongoDB
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
+
+if (MONGO_URI) {
+  mongoose.connect(MONGO_URI)
+    .then(() => console.log('MongoDB Connected'))
+    .catch(err => {
+      console.error('MongoDB connection error:', err);
+      // Don't crash the app, just log the error. The app can still serve requests using MockDB if configured.
+      console.log('Continuing without MongoDB connection...');
+    });
+} else {
+  console.log('No MONGO_URI provided. Using Mock Database (in-memory). Data will not persist across restarts.');
+}
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

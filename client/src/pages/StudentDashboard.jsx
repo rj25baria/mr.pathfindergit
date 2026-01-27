@@ -17,10 +17,10 @@ const StudentDashboard = () => {
 
   const fetchData = async () => {
     try {
-      const userRes = await axios.get('http://localhost:5000/api/auth/me', { withCredentials: true });
+      const userRes = await axios.get(`${API_URL}/api/auth/me`, { withCredentials: true });
       setUser(userRes.data.data);
       
-      const roadmapRes = await axios.get('http://localhost:5000/api/roadmap/my-roadmap', { withCredentials: true });
+      const roadmapRes = await axios.get(`${API_URL}/api/roadmap/my-roadmap`, { withCredentials: true });
       // Backend now returns { count: N, data: [...] }
       const roadmapData = roadmapRes.data.data;
       setRoadmaps(roadmapData);
@@ -44,7 +44,7 @@ const StudentDashboard = () => {
     }
 
     try {
-      const res = await axios.put('http://localhost:5000/api/roadmap/progress', {
+      const res = await axios.put(`${API_URL}/api/roadmap/progress`, {
         roadmapId: activeRoadmap._id,
         itemId,
         type,
@@ -153,9 +153,9 @@ const StudentDashboard = () => {
       )}
 
       {/* Header Stats */}
-      <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="bg-white p-4 md:p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Welcome, {user?.name}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Welcome, {user?.name}</h1>
           <div className="flex items-center gap-4 mt-2">
              <div className="flex gap-2 overflow-x-auto">
                 {roadmaps.map((rm, idx) => (
@@ -177,21 +177,21 @@ const StudentDashboard = () => {
           <p className="text-gray-600 mt-2">Target: <span className="font-semibold text-indigo-600">{activeRoadmap?.goal || activeRoadmap?.title}</span></p>
         </div>
         
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">
           <div className="flex flex-col items-center">
              <div className="flex items-center gap-1 text-orange-500 font-bold text-xl">
                <Flame size={24} fill="currentColor" /> {user?.streak || 0}
              </div>
              <p className="text-xs text-gray-500 uppercase tracking-wide">Day Streak</p>
           </div>
-          <div className="h-12 w-px bg-gray-200"></div>
+          <div className="hidden md:block h-12 w-px bg-gray-200"></div>
           <div className="text-center">
              <div className={`text-2xl font-bold ${getScoreColor(user?.readinessScore || 0)}`}>
                {user?.readinessScore || 0}%
              </div>
              <p className="text-xs text-gray-500 uppercase tracking-wide">Readiness Score</p>
           </div>
-          <div className="h-12 w-px bg-gray-200"></div>
+          <div className="hidden md:block h-12 w-px bg-gray-200"></div>
           <div className="text-center">
              <div className="text-xl font-bold text-indigo-600">
                {getScoreLabel(user?.readinessScore || 0)}
@@ -203,7 +203,7 @@ const StudentDashboard = () => {
 
       {/* Badges */}
       {user?.badges?.length > 0 && (
-        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-md border border-gray-100">
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Award className="text-indigo-600" /> Your Achievements
           </h2>
@@ -222,7 +222,7 @@ const StudentDashboard = () => {
       )}
 
       {/* Phases and Projects */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
         
         {/* Learning Phases */}
         <div className="space-y-6">

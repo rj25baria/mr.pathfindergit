@@ -6,6 +6,7 @@ const MockDb = require('./mockDb');
 
 const createProxy = (modelName, MongooseModel) => { return new Proxy({}, {
     get(target, prop) {
+      // Check if mongoose is connected (readyState === 1)
       const impl = mongoose.connection.readyState === 1 ? MongooseModel : MockDb[modelName];
       const value = impl[prop];
       

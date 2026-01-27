@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Brain, Code, Target, BookOpen, Clock } from 'lucide-react';
+import { API_URL } from '../config';
 
 const RoadmapForm = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const RoadmapForm = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/roadmap/generate', formData, { withCredentials: true });
+      const res = await axios.post(`${API_URL}/api/roadmap/generate`, formData, { withCredentials: true });
       if (res.data.success) {
         navigate('/dashboard');
       }
@@ -33,9 +34,9 @@ const RoadmapForm = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md border border-gray-100">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-indigo-900">Create Your Career Roadmap</h2>
+    <div className="max-w-2xl mx-auto bg-white p-4 md:p-8 rounded-xl shadow-md border border-gray-100 mt-4 md:mt-8">
+      <div className="text-center mb-6 md:mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-indigo-900">Create Your Career Roadmap</h2>
         <p className="text-gray-600 mt-2">Mr. Pathfinder's AI will analyze your profile and build a custom plan.</p>
       </div>
 
