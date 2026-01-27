@@ -21,7 +21,7 @@ const RoadmapForm = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await api.post('/api/roadmap/generate', formData);
+      const res = await axios.post(`${API_URL}/api/roadmap/generate`, formData, { withCredentials: true });
       if (res.data.success) {
         toast.success('Roadmap generated successfully! 🚀');
         navigate('/dashboard');

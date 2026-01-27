@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import { CheckCircle, Circle, ExternalLink, Award, TrendingUp, Flame, Star, Calendar, Briefcase, Hammer } from 'lucide-react';
 import { API_URL } from '../config';
 

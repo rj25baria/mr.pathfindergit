@@ -31,7 +31,7 @@ const Auth = () => {
 
     try {
       // Make API call to backend
-      const res = await api.post(endpoint, formData);
+      const res = await axios.post(`${API_URL}${endpoint}`, formData, { withCredentials: true });
 
       if (res.data.success) {
         // Save token to localStorage for cross-origin persistence
@@ -42,7 +42,7 @@ const Auth = () => {
         toast.success(`Welcome back, ${res.data.user.name}!`);
         // Redirect based on role
         if (res.data.user.role === 'hr') navigate('/hr-dashboard');
-        else navigate('/dashboard');
+        else navigate('/generate');
       }
     } catch (err) {
       // Show backend error or fallback message
