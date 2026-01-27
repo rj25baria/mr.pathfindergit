@@ -1,29 +1,36 @@
-const { User } = require('../utils/dbHelper');
+const User = require('../models/UserSql');
+const { Op } = require('sequelize');
 
 exports.searchCandidates = async (req, res) => {
   try {
     const { skill, minScore } = req.query;
     
-    let query = { role: 'student' };
+    let where = { role: 'student' };
     
     if (skill) {
-      query.$or = [
-        { interests: { $regex: skill, $options: 'i' } },
-        { careerGoal: { $regex: skill, $options: 'i' } }
+      // In SQLite/Sequelize, we can use Op.like for pattern matching
+      // Since interests is JSON string, checking containment might be tricky in pure SQLite without extensions
+      // We will check careerGoal OR verify if skill is in interests string
+      where[Op.or] = [
+        { careerGoal: { [Op.like]: `%${skill}%` } },
+        { interests: { [Op.like]: `%${skill}%` } } // Simple string check on JSON
       ];
     }
     
     if (minScore) {
-      query.readinessScore = { $gte: parseInt(minScore) };
+      where.readinessScore = { [Op.gte]: parseInt(minScore) };
     }
     
-    const candidates = await User.find(query)
-      .select('-password')
-      .sort({ readinessScore: -1 });
+    const candidates = await User.findAll({
+      where,
+      attributes: { exclude: ['password'] },
+      order: [['readinessScore', 'DESC']]
+    });
       
     res.status(200).json({ success: true, count: candidates.length, data: candidates });
     
   } catch (err) {
+    console.error(err);
     res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
