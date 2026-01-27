@@ -8,7 +8,7 @@ import Navbar from './components/Navbar';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/mr.pathfinder">
       <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
         <Navbar />
         <div className="container mx-auto px-4 py-8">
