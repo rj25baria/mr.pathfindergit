@@ -70,7 +70,25 @@ We will use **Vercel** to host the React frontend.
 
 ---
 
-## 🔗 4. Final Connection Steps
+## 🔑 5. How to Get Your API Keys
+
+### **1. JWT_SECRET (For Security)**
+This is a password your server uses to sign login tokens. You can use any long, random string.
+*   **Option A (Quick):** Copy this one I generated for you:
+    `d41d8cd98f00b204e9800998ecf8427e_MakeSureToChangeThisToSomethingRandom`
+*   **Option B (Secure):** Go to [RandomKeygen](https://randomkeygen.com/) and copy a "CodeIgniter Encryption Key".
+
+### **2. GEMINI_API_KEY (For AI Features)**
+This is required for the AI to generate custom roadmaps.
+1.  Go to [Google AI Studio](https://aistudio.google.com/app/apikey).
+2.  Sign in with your Google Account.
+3.  Click **Create API Key**.
+4.  Copy the key (starts with `AIza...`).
+    *   *Note: If you skip this, the app will use "Smart Fallback" mode and generate roadmaps using pre-set templates instead of real AI.*
+
+---
+
+## 🔗 6. Final Connection Steps
 
 Now that both sides are up, we need to link them securely.
 
