@@ -135,16 +135,9 @@ const Auth = () => {
                   className="w-full p-3 border rounded"
                 >
                   <option value="" disabled>Select Primary Interest</option>
-                  <option value="Artificial Intelligence">Artificial Intelligence</option>
-                  <option value="Web Development">Web Development</option>
-                  <option value="Data Science">Data Science</option>
-                  <option value="App Development">App Development</option>
-                  <option value="Cybersecurity">Cybersecurity</option>
-                  <option value="Cloud Computing">Cloud Computing</option>
-                  <option value="DevOps">DevOps</option>
-                  <option value="Blockchain">Blockchain</option>
-                  <option value="Game Development">Game Development</option>
-                  <option value="Other">Other</option>
+                  {INTEREST_OPTIONS.map((interest) => (
+                    <option key={interest} value={interest}>{interest}</option>
+                  ))}
                 </select>
 
                 <input

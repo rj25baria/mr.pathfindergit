@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import toast from 'react-hot-toast';
 import { Brain, Code, Target, BookOpen, Clock } from 'lucide-react';
+import { INTEREST_OPTIONS } from '../data/constants';
 
 const RoadmapForm = () => {
   const navigate = useNavigate();

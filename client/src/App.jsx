@@ -9,6 +9,7 @@ const Auth = lazy(() => import('./pages/Auth'));
 const StudentDashboard = lazy(() => import('./pages/StudentDashboard'));
 const RoadmapForm = lazy(() => import('./pages/RoadmapForm'));
 const HRDashboard = lazy(() => import('./pages/HRDashboard'));
+const Profile = lazy(() => import('./pages/Profile'));
 
 function App() {
   // Use VITE_BASENAME env var if set, otherwise default to '/'

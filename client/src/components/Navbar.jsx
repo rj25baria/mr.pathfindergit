@@ -91,15 +91,23 @@ const Navbar = () => {
                 HR Portal
               </Link>
             )}
-            <Link to="/auth" className="hover:text-indigo-200 transition block py-2" onClick={closeMenu}>
-              Login
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800 transition w-full text-left"
-            >
-              Logout
-            </button>
+            {user ? (
+              <>
+                <Link to="/profile" className="hover:text-indigo-200 transition block py-2" onClick={closeMenu}>
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="bg-indigo-700 px-4 py-2 rounded hover:bg-indigo-800 transition w-full text-left"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link to="/auth" className="hover:text-indigo-200 transition block py-2" onClick={closeMenu}>
+                Login
+              </Link>
+            )}
           </div>
         )}
       </div>

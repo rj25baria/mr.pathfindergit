@@ -261,12 +261,21 @@ const HRDashboard = () => {
               </div>
             </div>
 
-            <button 
-              onClick={() => setSelectedCandidate(candidate)}
-              className="w-full border border-indigo-600 text-indigo-600 py-2 rounded-lg font-semibold hover:bg-indigo-50 transition flex items-center justify-center gap-2"
-            >
-              <Star size={16} /> View Profile
-            </button>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setSelectedCandidate(candidate)}
+                className="flex-1 border border-indigo-600 text-indigo-600 py-2 rounded-lg font-semibold hover:bg-indigo-50 transition flex items-center justify-center gap-2"
+              >
+                <Star size={16} /> View Profile
+              </button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); handleDelete(candidate._id); }}
+                className="px-3 border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition flex items-center justify-center"
+                title="Remove Candidate"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
           </div>
         ))}
       </div>
