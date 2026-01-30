@@ -10,6 +10,7 @@ const StudentDashboard = () => {
   const [activeRoadmap, setActiveRoadmap] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submissionModal, setSubmissionModal] = useState({ show: false, projectId: null, link: '' });
+  const [quizModal, setQuizModal] = useState({ show: false, phaseId: null, phaseName: '' });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,6 +48,13 @@ const StudentDashboard = () => {
         return;
     }
 
+    // If it's a phase and not completed, require quiz/validation
+    if (type === 'phase' && !currentStatus) {
+        const phase = activeRoadmap.phases.find(p => p._id === itemId);
+        setQuizModal({ show: true, phaseId: itemId, phaseName: phase?.phaseName });
+        return;
+    }
+
     try {
       const res = await api.put('/api/roadmap/progress', {
         roadmapId: activeRoadmap._id, // Use _id for MongoDB
@@ -68,8 +76,9 @@ const StudentDashboard = () => {
         badges: res.data.badges
       }));
       
-      // Close modal if open
+      // Close modals if open
       setSubmissionModal({ show: false, projectId: null, link: '' });
+      setQuizModal({ show: false, phaseId: null, phaseName: '' });
       toast.success('Progress updated successfully!');
       
       // Celebrate milestones
@@ -84,7 +93,23 @@ const StudentDashboard = () => {
 
   const submitProject = (e) => {
       e.preventDefault();
+      
+      // GitHub URL Validation
+      const githubRegex = /^https:\/\/github\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+/;
+      if (!githubRegex.test(submissionModal.link)) {
+          toast.error('Please enter a valid GitHub repository URL (e.g., https://github.com/user/repo)');
+          return;
+      }
+
       handleProgress(submissionModal.projectId, 'project', false, submissionModal.link);
+  };
+
+  const submitQuiz = (e) => {
+    e.preventDefault();
+    // In a real app, we would validate answers here.
+    // For now, we assume if they took the time to submit, they studied.
+    toast.success('Quiz passed! Great job.');
+    handleProgress(quizModal.phaseId, 'phase', false);
   };
 
   if (loading) return <div className="text-center mt-20">Loading...</div>;
@@ -155,6 +180,63 @@ const StudentDashboard = () => {
                    className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700"
                  >
                    Verify & Complete
+                 </button>
+               </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Quiz Modal */}
+      {quizModal.show && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg animate-in fade-in zoom-in duration-200 overflow-y-auto max-h-[90vh]">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Phase Knowledge Check</h3>
+            <p className="text-indigo-600 font-semibold mb-4">{quizModal.phaseName}</p>
+            <p className="text-gray-600 text-sm mb-4">
+               To ensure you've mastered this phase, please complete this quick reflection quiz.
+            </p>
+            <form onSubmit={submitQuiz} className="space-y-4">
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-1">What are the 3 most important things you learned?</label>
+                 <textarea 
+                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                   rows="3"
+                   placeholder="1. ...&#10;2. ...&#10;3. ..."
+                   required
+                   minLength="20"
+                 ></textarea>
+               </div>
+               
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-1">Explain one key concept from this phase in your own words:</label>
+                 <textarea 
+                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                   rows="3"
+                   placeholder="e.g. React hooks allow us to..."
+                   required
+                   minLength="20"
+                 ></textarea>
+               </div>
+
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Self-Assessment Score (1-10)</label>
+                  <input type="number" min="1" max="10" className="w-full p-3 border rounded-lg" required />
+               </div>
+
+               <div className="flex gap-3 justify-end mt-4">
+                 <button 
+                   type="button" 
+                   onClick={() => setQuizModal({ show: false, phaseId: null, phaseName: '' })}
+                   className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg"
+                 >
+                   Cancel
+                 </button>
+                 <button 
+                   type="submit" 
+                   className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700"
+                 >
+                   Submit & Complete Phase
                  </button>
                </div>
             </form>

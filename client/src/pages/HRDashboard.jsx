@@ -10,6 +10,7 @@ const HRDashboard = () => {
   const [filters, setFilters] = useState({ skill: '', minScore: '' });
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ total: 0, ready: 0, streak: 0 });
 
   useEffect(() => {
     fetchCandidates();
@@ -19,9 +20,20 @@ const HRDashboard = () => {
     setLoading(true);
     try {
       const res = await api.get('/api/hr/search', { params });
-      // Sort candidates by readinessScore (Descending) to show top talent first
-      const sortedCandidates = res.data.data.sort((a, b) => b.readinessScore - a.readinessScore);
+      
+      // Remove duplicates based on email
+      const uniqueCandidates = [...new Map(res.data.data.map(item => [item.email, item])).values()];
+      
+      // Sort candidates by readinessScore (Descending)
+      const sortedCandidates = uniqueCandidates.sort((a, b) => b.readinessScore - a.readinessScore);
       setCandidates(sortedCandidates);
+
+      // Calculate Stats
+      const total = sortedCandidates.length;
+      const ready = sortedCandidates.filter(c => c.readinessScore >= 70).length;
+      const topStreak = Math.max(...sortedCandidates.map(c => c.streak || 0), 0);
+      setStats({ total, ready, streak: topStreak });
+
     } catch (err) {
       console.error(err);
       if (err.response?.status === 401) {
@@ -46,6 +58,37 @@ const HRDashboard = () => {
 
   return (
     <div className="space-y-8 relative">
+      {/* Stats Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+           <div>
+             <p className="text-gray-500 text-sm font-bold uppercase">Total Candidates</p>
+             <h2 className="text-3xl font-extrabold text-gray-900 mt-1">{stats.total}</h2>
+           </div>
+           <div className="bg-indigo-50 p-3 rounded-full text-indigo-600">
+             <User size={32} />
+           </div>
+        </div>
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+           <div>
+             <p className="text-gray-500 text-sm font-bold uppercase">Job Ready (>70%)</p>
+             <h2 className="text-3xl font-extrabold text-green-600 mt-1">{stats.ready}</h2>
+           </div>
+           <div className="bg-green-50 p-3 rounded-full text-green-600">
+             <CheckCircle size={32} />
+           </div>
+        </div>
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+           <div>
+             <p className="text-gray-500 text-sm font-bold uppercase">Top Streak</p>
+             <h2 className="text-3xl font-extrabold text-orange-500 mt-1">{stats.streak} Days</h2>
+           </div>
+           <div className="bg-orange-50 p-3 rounded-full text-orange-600">
+             <Flame size={32} />
+           </div>
+        </div>
+      </div>
+
       {/* Candidate Details Modal */}
       {selectedCandidate && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
