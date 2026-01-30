@@ -151,7 +151,7 @@ const StudentDashboard = () => {
 
     if (passed) {
         toast.success(`Passed! Score: ${correctCount}/${total}. Great job!`, { duration: 5000 });
-        handleProgress(quizModal.phaseId, 'phase', false);
+        handleProgress(quizModal.phaseId, 'phase', false, null, true);
     } else {
         toast.error(`Not passed. Score: ${correctCount}/${total}. Please review the materials and try again.`);
     }

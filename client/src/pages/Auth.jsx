@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import toast from 'react-hot-toast';
+import { INTEREST_OPTIONS } from '../data/constants';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
