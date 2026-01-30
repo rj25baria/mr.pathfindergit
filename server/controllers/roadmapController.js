@@ -182,20 +182,12 @@ exports.generateRoadmap = async (req, res) => {
     const newRoadmap = await Roadmap.create({
       user: req.user._id,
       goal: careerGoal || 'General',
-      title: roadmapData.title, // Note: Roadmap schema might not have title/description at top level, let me check Schema again.
-      // Schema has: user, goal, phases, projects, createdAt. 
-      // It DOES NOT have title/description at root. It seems I should add them or store them elsewhere.
-      // Wait, the previous SQL model had title/description. 
-      // The Mongoose model I read earlier:
-      // user, goal, phases, projects.
-      // It seems I need to update the Mongoose model to include title and description if I want to save them.
-      // Or I just map 'goal' to title?
-      // Let's assume for now I should stick to the Schema I read.
+      title: roadmapData.title,
       phases: normalizedPhases,
       projects: normalizedProjects
     });
 
-    res.status(201).json({ success: true, data: savedRoadmap });
+    res.status(201).json({ success: true, data: newRoadmap });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server Error' });
@@ -213,18 +205,17 @@ exports.validatePhaseQuiz = async (req, res) => {
       Student Answers:
       1. Key Learnings: ${answers.learnings}
       2. Concept Explanation: ${answers.concept}
-      3. Self-Assessment: ${answers.selfScore}/10
       
       Task:
       - Analyze if the answers demonstrate genuine understanding or if they are gibberish/too vague.
-      - Assign a score from 1 to 10.
+      - Assign a score from 1 to 10 based ONLY on the quality of their explanation.
       - Provide short constructive feedback (max 2 sentences).
       
       Output strictly in JSON format:
       {
         "score": number, // 1-10
         "feedback": "string",
-        "passed": boolean // true if score >= 6
+        "passed": boolean // true if score >= 7
       }
     `;
 
@@ -243,8 +234,8 @@ exports.validatePhaseQuiz = async (req, res) => {
     } catch (aiError) {
       console.error("AI Grading Error:", aiError);
       // Fallback: Use length validation
-      if (answers.learnings.length > 20 && answers.concept.length > 20) {
-          evaluation = { score: 7, feedback: "AI unavailable, but answers look sufficient.", passed: true };
+      if (answers.learnings.length > 30 && answers.concept.length > 30) {
+          evaluation = { score: 7, feedback: "AI unavailable, but answers look detailed.", passed: true };
       } else {
           evaluation = { score: 4, feedback: "Answers too short. Please elaborate.", passed: false };
       }
