@@ -20,6 +20,21 @@ const RoadmapForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (!formData.interests) {
+        toast.error('Please select a track/interest.');
+        return;
+    }
+    if (!formData.careerGoal.trim()) {
+        toast.error('Please enter a career goal.');
+        return;
+    }
+    if (parseInt(formData.hoursPerWeek) < 1) {
+        toast.error('Please enter at least 1 hour per week.');
+        return;
+    }
+
     setLoading(true);
       try {
       // Send to backend

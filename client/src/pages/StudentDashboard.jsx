@@ -68,7 +68,7 @@ const StudentDashboard = () => {
     }
   };
 
-  const handleProgress = async (itemId, type, currentStatus, submissionLink = null) => {
+  const handleProgress = async (itemId, type, currentStatus, submissionLink = null, bypassValidation = false) => {
     if (!activeRoadmap) return;
     
     // If it's a project and not completed, require submission link
@@ -78,11 +78,34 @@ const StudentDashboard = () => {
     }
 
     // If it's a phase and not completed, require quiz/validation
-    if (type === 'phase' && !currentStatus) {
+    if (type === 'phase' && !currentStatus && !bypassValidation) {
         const phase = activeRoadmap.phases.find(p => p._id === itemId);
         setQuizModal({ show: true, phaseId: itemId, phaseName: phase?.phaseName });
         return;
     }
+
+    // Optimistic Update
+    const previousRoadmaps = [...roadmaps];
+    const previousActiveRoadmap = { ...activeRoadmap };
+    
+    // Temporarily update state
+    const updatedPhases = activeRoadmap.phases.map(p => 
+        p._id === itemId && type === 'phase' ? { ...p, completed: !currentStatus } : p
+    );
+    const updatedProjects = activeRoadmap.projects.map(p => 
+        p._id === itemId && type === 'project' ? { ...p, completed: !currentStatus, githubLink: submissionLink || p.githubLink } : p
+    );
+    
+    const tempUpdatedRoadmap = { 
+        ...activeRoadmap, 
+        phases: updatedPhases, 
+        projects: updatedProjects,
+        // Estimate score increase (visual only until server confirms)
+        readinessScore: !currentStatus ? Math.min(activeRoadmap.readinessScore + 5, 100) : activeRoadmap.readinessScore 
+    };
+
+    setActiveRoadmap(tempUpdatedRoadmap);
+    setRoadmaps(prev => prev.map(r => r._id === tempUpdatedRoadmap._id ? tempUpdatedRoadmap : r));
 
     try {
       const res = await api.put('/api/roadmap/progress', {
@@ -93,10 +116,9 @@ const StudentDashboard = () => {
         submissionLink
       });
       
-      // Update the active roadmap in the list
+      // Update with actual server data
       const updatedRoadmap = res.data.data;
       
-      // Force update state to ensure UI reflects changes immediately
       setActiveRoadmap({ ...updatedRoadmap });
       setRoadmaps(prev => prev.map(r => r._id === updatedRoadmap._id ? updatedRoadmap : r));
 
@@ -119,6 +141,10 @@ const StudentDashboard = () => {
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || 'Error updating progress');
+      
+      // Revert on error
+      setActiveRoadmap(previousActiveRoadmap);
+      setRoadmaps(previousRoadmaps);
     }
   };
 
@@ -148,14 +174,14 @@ const StudentDashboard = () => {
     });
 
     const total = quizData.questions.length;
-    const score = (correctCount / total) * 10;
-    const passed = correctCount >= Math.ceil(total * 0.7); // 70% to pass
+    const score = correctCount;
+    const passed = correctCount === total; // Require 100% (3/3) to pass
 
     if (passed) {
-        toast.success(`Passed! Score: ${correctCount}/${total}. Great job!`, { duration: 5000 });
+        toast.success(`Perfect! Score: ${correctCount}/${total}. Phase Completed!`, { duration: 5000 });
         handleProgress(quizModal.phaseId, 'phase', false, null, true);
     } else {
-        toast.error(`Not passed. Score: ${correctCount}/${total}. Please review the materials and try again.`);
+        toast.error(`Not passed. Score: ${correctCount}/${total}. You need 3/3 to complete this phase.`, { duration: 5000 });
     }
   };
 

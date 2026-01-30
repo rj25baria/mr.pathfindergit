@@ -143,6 +143,7 @@ const Auth = () => {
 
                 <input
                   name="careerGoal"
+                  value={formData.careerGoal}
                   placeholder="Dream Job / Career Goal"
                   onChange={handleChange}
                   className="w-full p-3 border rounded"
@@ -156,6 +157,7 @@ const Auth = () => {
         <input
           name="email"
           type="email"
+          value={formData.email}
           placeholder="Email Address"
           autoComplete="email"
           onChange={handleChange}
@@ -167,6 +169,7 @@ const Auth = () => {
           <input
             name="password"
             type="password"
+            value={formData.password}
             placeholder="Password"
             autoComplete={isLogin ? "current-password" : "new-password"}
             onChange={handleChange}

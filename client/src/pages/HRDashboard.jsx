@@ -44,6 +44,25 @@ const HRDashboard = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to remove this candidate? This action cannot be undone.')) return;
+    
+    const previousCandidates = [...candidates];
+    setCandidates(prev => prev.filter(c => c._id !== id));
+    setStats(prev => ({ ...prev, total: prev.total - 1 }));
+
+    try {
+      await api.delete(`/api/hr/candidate/${id}`);
+      toast.success('Candidate removed successfully');
+      if (selectedCandidate?._id === id) setSelectedCandidate(null);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to remove candidate');
+      setCandidates(previousCandidates);
+      setStats(prev => ({ ...prev, total: prev.total + 1 }));
+    }
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
     fetchCandidates(filters);
@@ -96,7 +115,8 @@ const HRDashboard = () => {
             <div className="bg-indigo-600 p-6 flex justify-between items-start text-white">
               <div>
                 <h2 className="text-2xl font-bold">{selectedCandidate.name}</h2>
-                <p className="opacity-90">{selectedCandidate.education}</p>
+                <p className="opacity-90">{selectedCandidate.email}</p>
+                <p className="text-sm opacity-75">{selectedCandidate.education}</p>
               </div>
               <button onClick={() => setSelectedCandidate(null)} className="hover:bg-indigo-700 p-1 rounded transition">
                 <X size={24} />
@@ -168,8 +188,14 @@ const HRDashboard = () => {
                   href={`mailto:${selectedCandidate.email}`}
                   className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                 >
-                  <Mail size={18} /> {selectedCandidate.email}
+                  <Mail size={18} /> Send Email
                 </a>
+                <button
+                    onClick={() => handleDelete(selectedCandidate._id)}
+                    className="bg-red-50 text-red-600 px-4 py-3 rounded-lg font-bold hover:bg-red-100 transition flex items-center justify-center gap-2 border border-red-200"
+                >
+                    <Trash2 size={18} /> Remove
+                </button>
               </div>
             </div>
           </div>
@@ -195,7 +221,7 @@ const HRDashboard = () => {
           <div className="w-full md:w-48">
             <input 
               type="number" 
-              placeholder="Min Readiness Score" 
+              placeholder="Min Score" 
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
               value={filters.minScore}
               onChange={(e) => setFilters({...filters, minScore: e.target.value})}
@@ -219,66 +245,65 @@ const HRDashboard = () => {
           <p className="text-gray-500">Try adjusting your filters to find more students.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {candidates.map((candidate) => (
-          <div key={candidate._id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-indigo-100 p-2 rounded-full text-indigo-600 relative">
-                  <User size={24} />
-                  {candidate.readinessScore > 80 && (
-                     <div className="absolute -top-1 -right-1 bg-yellow-400 rounded-full p-0.5 border-2 border-white" title="Top Talent">
-                        <Star size={10} fill="white" className="text-white" />
-                     </div>
-                  )}
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg text-gray-900">{candidate.name}</h3>
-                  <p className="text-sm text-gray-500">{candidate.education}</p>
-                </div>
-              </div>
-              <div className={`px-3 py-1 rounded-full text-xs font-bold ${getScoreColor(candidate.readinessScore)}`}>
-                Score: {candidate.readinessScore}
-              </div>
-            </div>
-            
-            <div className="space-y-3 mb-4">
-              <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase">Email</p>
-                <p className="text-gray-800 text-sm truncate" title={candidate.email}>{candidate.email}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase">Career Goal</p>
-                <p className="text-gray-800">{candidate.careerGoal}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase">Interests</p>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {candidate.interests.map((int, i) => (
-                    <span key={i} className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded">{int}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <button 
-                onClick={() => setSelectedCandidate(candidate)}
-                className="flex-1 border border-indigo-600 text-indigo-600 py-2 rounded-lg font-semibold hover:bg-indigo-50 transition flex items-center justify-center gap-2"
-              >
-                <Star size={16} /> View Profile
-              </button>
-              <button 
-                onClick={(e) => { e.stopPropagation(); handleDelete(candidate._id); }}
-                className="px-3 border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition flex items-center justify-center"
-                title="Remove Candidate"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-4 font-semibold text-gray-600 uppercase text-xs">Candidate</th>
+                  <th className="px-6 py-4 font-semibold text-gray-600 uppercase text-xs">Score</th>
+                  <th className="px-6 py-4 font-semibold text-gray-600 uppercase text-xs">Skills</th>
+                  <th className="px-6 py-4 font-semibold text-gray-600 uppercase text-xs">Goal</th>
+                  <th className="px-6 py-4 font-semibold text-gray-600 uppercase text-xs text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {candidates.map((candidate) => (
+                  <tr key={candidate._id} className="hover:bg-gray-50 transition cursor-pointer" onClick={() => setSelectedCandidate(candidate)}>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-indigo-100 p-2 rounded-full text-indigo-600">
+                           <User size={20} />
+                        </div>
+                        <div>
+                           <p className="font-bold text-gray-900">{candidate.name}</p>
+                           <p className="text-xs text-gray-500">{candidate.email}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2 py-1 rounded text-xs font-bold ${getScoreColor(candidate.readinessScore)}`}>
+                        {candidate.readinessScore}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-wrap gap-1">
+                        {candidate.interests.slice(0, 2).map((int, i) => (
+                           <span key={i} className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded border border-gray-200">{int}</span>
+                        ))}
+                        {candidate.interests.length > 2 && (
+                           <span className="text-xs text-gray-500">+{candidate.interests.length - 2}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
+                       {candidate.careerGoal}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                       <button 
+                         onClick={(e) => { e.stopPropagation(); handleDelete(candidate._id); }}
+                         className="text-red-500 hover:bg-red-50 p-2 rounded transition"
+                         title="Remove Candidate"
+                       >
+                         <Trash2 size={18} />
+                       </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ))}
-      </div>
+        </div>
       )}
     </div>
   );
