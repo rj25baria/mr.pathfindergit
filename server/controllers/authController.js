@@ -1,9 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { OAuth2Client } = require('google-auth-library');
-
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Helper to send token response
 const sendTokenResponse = (user, statusCode, res) => {
@@ -97,47 +94,6 @@ exports.login = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server Error' });
-  }
-};
-
-exports.googleLogin = async (req, res) => {
-  try {
-    const { token } = req.body;
-    
-    const ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: process.env.GOOGLE_CLIENT_ID
-    });
-    const { name, email, picture } = ticket.getPayload();
-
-    let user = await User.findOne({ email });
-
-    if (!user) {
-        // Create new user if not exists
-        const randomPassword = Math.random().toString(36).slice(-8);
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(randomPassword, salt);
-
-        user = await User.create({
-            name,
-            email,
-            password: hashedPassword,
-            role: 'student', // Default role
-            education: 'Not specified',
-            interests: [],
-            skillLevel: 'Beginner',
-            careerGoal: 'Not specified',
-            readinessScore: 0,
-            streak: 0,
-            badges: [],
-            lastActivity: new Date()
-        });
-    }
-
-    sendTokenResponse(user, 200, res);
-  } catch (err) {
-    console.error("Google Auth Error:", err);
-    res.status(401).json({ success: false, message: 'Google authentication failed' });
   }
 };
 
