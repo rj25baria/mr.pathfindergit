@@ -11,11 +11,37 @@ const StudentDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [submissionModal, setSubmissionModal] = useState({ show: false, projectId: null, link: '' });
   const [quizModal, setQuizModal] = useState({ show: false, phaseId: null, phaseName: '' });
+  const [quizData, setQuizData] = useState(null);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [userAnswers, setUserAnswers] = useState({});
+
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (quizModal.show && quizModal.phaseName) {
+        fetchQuiz();
+    }
+  }, [quizModal.show, quizModal.phaseName]);
+
+  const fetchQuiz = async () => {
+    setQuizLoading(true);
+    setQuizData(null);
+    setUserAnswers({});
+    try {
+        const res = await api.post('/api/roadmap/quiz', { phaseName: quizModal.phaseName });
+        setQuizData(res.data.data);
+    } catch (err) {
+        console.error(err);
+        toast.error("Failed to load quiz. Please try again.");
+        setQuizModal({ show: false, phaseId: null, phaseName: '' });
+    } finally {
+        setQuizLoading(false);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -110,35 +136,24 @@ const StudentDashboard = () => {
   const submitQuiz = async (e) => {
     e.preventDefault();
     
-    // Collect answers
-    const answers = {
-        learnings: e.target[0].value,
-        concept: e.target[1].value,
-        selfScore: e.target[2].value
-    };
+    if (!quizData || !quizData.questions) return;
 
-    const loadingToast = toast.loading('AI is grading your quiz...');
-
-    try {
-        const res = await api.post('/api/roadmap/validate-quiz', {
-            phaseName: quizModal.phaseName,
-            answers
-        });
-
-        toast.dismiss(loadingToast);
-
-        const { score, feedback, passed } = res.data.data;
-
-        if (passed) {
-            toast.success(`Passed! AI Score: ${score}/10. ${feedback}`, { duration: 5000 });
-            handleProgress(quizModal.phaseId, 'phase', false);
-        } else {
-            toast.error(`Not passed. AI Score: ${score}/10. ${feedback}`);
+    let correctCount = 0;
+    quizData.questions.forEach((q, idx) => {
+        if (userAnswers[idx] === q.correctIndex) {
+            correctCount++;
         }
-    } catch (err) {
-        toast.dismiss(loadingToast);
-        console.error(err);
-        toast.error('Error grading quiz. Please try again.');
+    });
+
+    const total = quizData.questions.length;
+    const score = (correctCount / total) * 10;
+    const passed = correctCount >= Math.ceil(total * 0.7); // 70% to pass
+
+    if (passed) {
+        toast.success(`Passed! Score: ${correctCount}/${total}. Great job!`, { duration: 5000 });
+        handleProgress(quizModal.phaseId, 'phase', false);
+    } else {
+        toast.error(`Not passed. Score: ${correctCount}/${total}. Please review the materials and try again.`);
     }
   };
 
@@ -220,56 +235,67 @@ const StudentDashboard = () => {
       {/* Quiz Modal */}
       {quizModal.show && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg animate-in fade-in zoom-in duration-200 overflow-y-auto max-h-[90vh]">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl animate-in fade-in zoom-in duration-200 overflow-y-auto max-h-[90vh]">
             <h3 className="text-xl font-bold text-gray-900 mb-2">Phase Knowledge Check</h3>
             <p className="text-indigo-600 font-semibold mb-4">{quizModal.phaseName}</p>
-            <p className="text-gray-600 text-sm mb-4">
-               To ensure you've mastered this phase, please complete this quick reflection quiz.
-            </p>
-            <form onSubmit={submitQuiz} className="space-y-4">
-               <div>
-                 <label className="block text-sm font-medium text-gray-700 mb-1">What are the 3 most important things you learned?</label>
-                 <textarea 
-                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-                   rows="3"
-                   placeholder="1. ...&#10;2. ...&#10;3. ..."
-                   required
-                   minLength="20"
-                 ></textarea>
-               </div>
-               
-               <div>
-                 <label className="block text-sm font-medium text-gray-700 mb-1">Explain one key concept from this phase in your own words:</label>
-                 <textarea 
-                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-                   rows="3"
-                   placeholder="e.g. React hooks allow us to..."
-                   required
-                   minLength="20"
-                 ></textarea>
-               </div>
+            
+            {quizLoading ? (
+                <div className="text-center py-10">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Generating Quiz...</p>
+                </div>
+            ) : quizData ? (
+                <form onSubmit={submitQuiz} className="space-y-6">
+                    {quizData.questions.map((q, qIdx) => (
+                        <div key={qIdx} className="bg-gray-50 p-4 rounded-lg">
+                            <p className="font-medium text-gray-800 mb-3">{qIdx + 1}. {q.question}</p>
+                            <div className="space-y-2">
+                                {q.options.map((opt, oIdx) => (
+                                    <label key={oIdx} className={`flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-gray-100 ${userAnswers[qIdx] === oIdx ? 'bg-indigo-50 border border-indigo-200' : ''}`}>
+                                        <input 
+                                            type="radio" 
+                                            name={`q-${qIdx}`} 
+                                            value={oIdx}
+                                            checked={userAnswers[qIdx] === oIdx}
+                                            onChange={() => setUserAnswers(prev => ({ ...prev, [qIdx]: oIdx }))}
+                                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500"
+                                        />
+                                        <span className="text-sm text-gray-700">{opt}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
 
-               <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Self-Assessment Score (1-10)</label>
-                  <input type="number" min="1" max="10" className="w-full p-3 border rounded-lg" required />
-               </div>
-
-               <div className="flex gap-3 justify-end mt-4">
-                 <button 
-                   type="button" 
-                   onClick={() => setQuizModal({ show: false, phaseId: null, phaseName: '' })}
-                   className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg"
-                 >
-                   Cancel
-                 </button>
-                 <button 
-                   type="submit" 
-                   className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700"
-                 >
-                   Submit & Complete Phase
-                 </button>
-               </div>
-            </form>
+                   <div className="flex gap-3 justify-end mt-4">
+                     <button 
+                       type="button" 
+                       onClick={() => setQuizModal({ show: false, phaseId: null, phaseName: '' })}
+                       className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg"
+                     >
+                       Cancel
+                     </button>
+                     <button 
+                       type="submit" 
+                       className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700"
+                       disabled={Object.keys(userAnswers).length < quizData.questions.length}
+                     >
+                       Submit & Check
+                     </button>
+                   </div>
+                </form>
+            ) : (
+                <div className="text-center py-10 text-red-500">
+                    Failed to load quiz.
+                    <button 
+                       type="button" 
+                       onClick={() => setQuizModal({ show: false, phaseId: null, phaseName: '' })}
+                       className="block mx-auto mt-4 text-indigo-600 hover:underline"
+                    >
+                       Close
+                    </button>
+                </div>
+            )}
           </div>
         </div>
       )}
