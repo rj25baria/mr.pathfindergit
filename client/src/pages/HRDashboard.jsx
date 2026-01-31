@@ -281,7 +281,10 @@ const HRDashboard = () => {
                         <div>
                            <p className="font-bold text-gray-900">{candidate.name}</p>
                            <p className="text-xs text-gray-500 flex items-center gap-1"><Mail size={12} /> {candidate.email}</p>
-                           {candidate.phone && <p className="text-xs text-gray-500 flex items-center gap-1"><Phone size={12} /> {candidate.phone}</p>}
+                           <p className="text-xs text-gray-500 flex items-center gap-1">
+                             <Phone size={12} /> 
+                             {candidate.phone ? candidate.phone : <span className="italic opacity-70">No phone</span>}
+                           </p>
                         </div>
                       </div>
                     </td>
