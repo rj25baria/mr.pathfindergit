@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,12 +19,35 @@ const Profile = () => {
     try {
       const res = await api.get('/api/auth/me');
       setUser(res.data.data);
+      setFormData({
+        name: res.data.data.name,
+        phone: res.data.data.phone || '',
+        education: res.data.data.education || '',
+        careerGoal: res.data.data.careerGoal || '',
+        skillLevel: res.data.data.skillLevel || 'Beginner'
+      });
     } catch (err) {
       console.error(err);
       toast.error('Failed to load profile');
       navigate('/auth');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const res = await api.put('/api/auth/profile', formData);
+      setUser(res.data.data);
+      setIsEditing(false);
+      toast.success('Profile updated successfully');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to update profile');
     }
   };
 
