@@ -126,7 +126,7 @@ const Auth = () => {
               name="phone"
               type="tel"
               value={formData.phone}
-              placeholder="Phone Number"
+              placeholder="Phone Number (Required for HR Contact)"
               autoComplete="tel"
               onChange={handleChange}
               className="w-full p-3 border rounded"
