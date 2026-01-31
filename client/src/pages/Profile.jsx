@@ -92,15 +92,48 @@ const Profile = () => {
               <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
                 <div>
                   <p className="text-sm text-gray-500">Career Goal</p>
-                  <p className="font-semibold text-gray-900">{user.careerGoal || 'Not set'}</p>
+                  {isEditing ? (
+                    <input 
+                      type="text"
+                      name="careerGoal"
+                      value={formData.careerGoal}
+                      onChange={handleChange}
+                      className="w-full border rounded px-2 py-1 mt-1"
+                    />
+                  ) : (
+                    <p className="font-semibold text-gray-900">{user.careerGoal || 'Not set'}</p>
+                  )}
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Education</p>
-                  <p className="font-semibold text-gray-900">{user.education || 'Not set'}</p>
+                  {isEditing ? (
+                    <input 
+                      type="text"
+                      name="education"
+                      value={formData.education}
+                      onChange={handleChange}
+                      className="w-full border rounded px-2 py-1 mt-1"
+                    />
+                  ) : (
+                    <p className="font-semibold text-gray-900">{user.education || 'Not set'}</p>
+                  )}
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Skill Level</p>
-                  <p className="font-semibold text-gray-900">{user.skillLevel || 'Not set'}</p>
+                  {isEditing ? (
+                    <select 
+                      name="skillLevel"
+                      value={formData.skillLevel}
+                      onChange={handleChange}
+                      className="w-full border rounded px-2 py-1 mt-1"
+                    >
+                      <option value="Beginner">Beginner</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Advanced">Advanced</option>
+                    </select>
+                  ) : (
+                    <p className="font-semibold text-gray-900">{user.skillLevel || 'Not set'}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -126,7 +159,24 @@ const Profile = () => {
           </div>
           
           <div className="pt-6 border-t border-gray-100 text-center">
-             <p className="text-gray-500 text-sm">Want to update your profile? <span className="text-indigo-600 font-bold cursor-pointer hover:underline" onClick={() => toast('Edit Profile coming soon!')}>Edit Profile</span></p>
+             {isEditing ? (
+               <div className="flex justify-center gap-4">
+                 <button 
+                   onClick={handleUpdate}
+                   className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-indigo-700 transition flex items-center gap-2"
+                 >
+                   <Save size={18} /> Save Changes
+                 </button>
+                 <button 
+                   onClick={() => setIsEditing(false)}
+                   className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-bold hover:bg-gray-300 transition"
+                 >
+                   Cancel
+                 </button>
+               </div>
+             ) : (
+               <p className="text-gray-500 text-sm">Want to update your profile? <span className="text-indigo-600 font-bold cursor-pointer hover:underline" onClick={() => setIsEditing(true)}>Edit Profile</span></p>
+             )}
           </div>
         </div>
       </div>

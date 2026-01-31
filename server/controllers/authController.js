@@ -37,7 +37,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, role, education, interests, skillLevel, careerGoal } = req.body;
+    const { name, email, phone, password, role, education, interests, skillLevel, careerGoal } = req.body;
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -53,6 +53,7 @@ exports.register = async (req, res) => {
     const user = await User.create({
       name,
       email,
+      phone,
       password: hashedPassword,
       role: role || 'student',
       education,
@@ -114,6 +115,28 @@ exports.getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     res.status(200).json({ success: true, data: user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const fieldsToUpdate = {
+      name: req.body.name,
+      phone: req.body.phone,
+      education: req.body.education,
+      careerGoal: req.body.careerGoal,
+      skillLevel: req.body.skillLevel
+    };
+
+    const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+      new: true,
+      runValidators: true
+    });
+
+    res.status(200).json({ success: true, data: user, message: 'Profile updated successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server Error' });
