@@ -116,9 +116,10 @@ const HRDashboard = () => {
               <div>
                 <h2 className="text-2xl font-bold">{selectedCandidate.name}</h2>
                 <p className="opacity-90 flex items-center gap-2"><Mail size={16} /> {selectedCandidate.email}</p>
-                {selectedCandidate.phone && (
-                  <p className="opacity-90 flex items-center gap-2 mt-1"><Phone size={16} /> {selectedCandidate.phone}</p>
-                )}
+                <p className="opacity-90 flex items-center gap-2 mt-1">
+                  <Phone size={16} /> 
+                  {selectedCandidate.phone || <span className="italic opacity-75">No phone provided</span>}
+                </p>
                 <p className="text-sm opacity-75 mt-1 flex items-center gap-2"><Briefcase size={16} /> {selectedCandidate.education || 'Education not specified'}</p>
               </div>
               <button onClick={() => setSelectedCandidate(null)} className="hover:bg-indigo-700 p-1 rounded transition">
