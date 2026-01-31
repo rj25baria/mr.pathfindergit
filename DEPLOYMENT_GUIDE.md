@@ -30,6 +30,18 @@ We will use **MongoDB Atlas** for a free, cloud-hosted database.
 
 We will use **Render** to host the Node.js server.
 
+### Option A: Auto-Deploy with Blueprints (Recommended)
+1.  **Push Code to GitHub:** Ensure your project is on GitHub.
+2.  **Create Blueprint:**
+    *   Go to [Render Dashboard](https://dashboard.render.com/).
+    *   Click **New +** -> **Blueprint**.
+    *   Connect your GitHub repository.
+    *   Render will detect `render.yaml` and auto-configure the service.
+3.  **Environment Variables:**
+    *   You will be prompted to enter `MONGO_URI`, `JWT_SECRET`, `GEMINI_API_KEY`, and `FRONTEND_URL`.
+4.  **Deploy:** Click **Apply**. Render will automatically build and deploy every time you push to GitHub.
+
+### Option B: Manual Setup
 1.  **Push Code to GitHub:** Ensure your project is on GitHub.
 2.  **Create Web Service:**
     *   Go to [Render Dashboard](https://dashboard.render.com/).
