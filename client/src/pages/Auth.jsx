@@ -63,16 +63,22 @@ const Auth = () => {
         }
         
         toast.success(`Welcome back, ${res.data.user.name}!`);
-        // Redirect based on role
-        if (res.data.user.role === 'hr') navigate('/hr-dashboard');
-        else navigate('/dashboard');
+        // Redirect based on role with a slight delay so user can see the message
+        setTimeout(() => {
+          if (res.data.user.role === 'hr') navigate('/hr-dashboard');
+          else navigate('/dashboard');
+        }, 1500);
       }
     } catch (err) {
       toast.dismiss(loadingToast); // Dismiss loading toast
       // Show backend error or fallback message
       toast.error(err.response?.data?.message || 'Error connecting to server');
+      setLoading(false); // Ensure loading is turned off on error
     } finally {
-      setLoading(false);
+      // If not successful login (e.g. error or signup), stop loading
+      // For successful login, we rely on the setTimeout to navigate away, 
+      // but we should eventually reset if component stays mounted (unlikely)
+      if (!isLogin) setLoading(false);
     }
   };
 
