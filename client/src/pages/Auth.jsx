@@ -121,6 +121,17 @@ const Auth = () => {
               className="w-full p-3 border rounded"
               required
             />
+
+            <input
+              name="phone"
+              type="tel"
+              value={formData.phone}
+              placeholder="Phone Number"
+              autoComplete="tel"
+              onChange={handleChange}
+              className="w-full p-3 border rounded"
+              required
+            />
             
             {/* Role Selection */}
             <select
