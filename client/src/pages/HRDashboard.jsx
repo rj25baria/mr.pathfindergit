@@ -115,8 +115,11 @@ const HRDashboard = () => {
             <div className="bg-indigo-600 p-6 flex justify-between items-start text-white">
               <div>
                 <h2 className="text-2xl font-bold">{selectedCandidate.name}</h2>
-                <p className="opacity-90">{selectedCandidate.email}</p>
-                <p className="text-sm opacity-75">{selectedCandidate.education}</p>
+                <p className="opacity-90 flex items-center gap-2"><Mail size={16} /> {selectedCandidate.email}</p>
+                {selectedCandidate.phone && (
+                  <p className="opacity-90 flex items-center gap-2 mt-1"><Phone size={16} /> {selectedCandidate.phone}</p>
+                )}
+                <p className="text-sm opacity-75 mt-1 flex items-center gap-2"><Briefcase size={16} /> {selectedCandidate.education || 'Education not specified'}</p>
               </div>
               <button onClick={() => setSelectedCandidate(null)} className="hover:bg-indigo-700 p-1 rounded transition">
                 <X size={24} />
@@ -277,8 +280,8 @@ const HRDashboard = () => {
                         </div>
                         <div>
                            <p className="font-bold text-gray-900">{candidate.name}</p>
-                           <p className="text-xs text-gray-500">{candidate.email}</p>
-                           {candidate.phone && <p className="text-xs text-gray-400">{candidate.phone}</p>}
+                           <p className="text-xs text-gray-500 flex items-center gap-1"><Mail size={12} /> {candidate.email}</p>
+                           {candidate.phone && <p className="text-xs text-gray-500 flex items-center gap-1"><Phone size={12} /> {candidate.phone}</p>}
                         </div>
                       </div>
                     </td>
