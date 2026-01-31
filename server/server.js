@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const User = require('./models/User');
 
 const app = express();
 
@@ -35,10 +36,34 @@ app.get('/', (req, res) => {
 // Connect to MongoDB
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
+const seedPhoneNumbers = async () => {
+  try {
+    const students = await User.find({ 
+      role: 'student', 
+      $or: [{ phone: { $exists: false } }, { phone: '' }, { phone: null }] 
+    });
+
+    if (students.length > 0) {
+      console.log(`Seeding phone numbers for ${students.length} students...`);
+      for (const student of students) {
+        // Generate random phone number (6-9 start, 10 digits)
+        const firstDigit = Math.floor(Math.random() * 4) + 6;
+        const rest = Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
+        student.phone = `${firstDigit}${rest}`;
+        await student.save();
+      }
+      console.log('Phone number seeding complete.');
+    }
+  } catch (err) {
+    console.error('Phone seeding error:', err.message);
+  }
+};
+
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/pathfinder');
     console.log(`MongoDB Connected: ${conn.connection.host}`);
+    await seedPhoneNumbers();
   } catch (err) {
     console.error(`MongoDB connection error: ${err.message}`);
     console.log("Attempting to start In-Memory MongoDB fallback...");
