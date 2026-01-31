@@ -146,12 +146,15 @@ const connectDB = async () => {
   } catch (err) {
     console.error(`MongoDB connection error: ${err.message}`);
     console.log("Attempting to start In-Memory MongoDB fallback...");
-    startInMemoryDB();
+    await startInMemoryDB();
   }
 };
 
-connectDB();
+// Start Server only after DB connects
+const startServer = async () => {
+  await connectDB();
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+};
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+startServer();
