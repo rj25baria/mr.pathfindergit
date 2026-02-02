@@ -14,7 +14,7 @@ const getApiUrl = () => {
   }
   
   // Third priority: Production fallback
-  return 'https://mr-pathfinder-api.onrender.com';
+  return 'https://mr-pathfinder.onrender.com';
 };
 
 export const API_URL = getApiUrl();
