@@ -138,6 +138,7 @@ const Auth = () => {
 
             <div className="p-8">
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Build Timestamp: 2026-02-02 Emergency Fix v2 */}
                     
                     {/* --- SIGN UP FIELDS --- */}
                     {!isLogin && (
