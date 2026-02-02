@@ -35,79 +35,7 @@ app.get('/', (req, res) => {
 
 // Connect to MongoDB
 const { MongoMemoryServer } = require('mongodb-memory-server');
-
-const seedSampleData = async () => {
-  try {
-    const studentCount = await User.countDocuments({ role: 'student' });
-    if (studentCount === 0) {
-      console.log('Database empty. Seeding sample candidates for demo...');
-      await User.create([
-        {
-          name: "Rahul Sharma",
-          email: "rahul.demo@example.com",
-          password: "password123",
-          role: "student",
-          education: "B.Tech CS",
-          interests: ["Machine Learning", "Python", "Data Analysis"],
-          careerGoal: "AI Researcher",
-          readinessScore: 85,
-          streak: 12,
-          phone: "9876543210"
-        },
-        {
-          name: "Jane Smith",
-          email: "jane@example.com",
-          password: "password123",
-          role: "student",
-          education: "B.Tech CS",
-          interests: ["Web Development", "React", "Node.js"],
-          careerGoal: "Full Stack Developer",
-          readinessScore: 72,
-          streak: 8,
-          phone: "9123456789"
-        },
-        {
-          name: "Mike Johnson",
-          email: "mike@example.com",
-          password: "password123",
-          role: "student",
-          education: "B.E. Electronics",
-          interests: ["IoT", "Embedded Systems", "C++"],
-          careerGoal: "IoT Engineer",
-          readinessScore: 65,
-          streak: 5,
-          phone: "9988776655"
-        }
-      ]);
-      console.log('Sample candidates seeded.');
-    }
-  } catch (err) {
-    console.error('Sample seeding error:', err);
-  }
-};
-
-const seedPhoneNumbers = async () => {
-  try {
-    const students = await User.find({ 
-      role: 'student', 
-      $or: [{ phone: { $exists: false } }, { phone: '' }, { phone: null }] 
-    });
-
-    if (students.length > 0) {
-      console.log(`Seeding phone numbers for ${students.length} students...`);
-      for (const student of students) {
-        // Generate random phone number (6-9 start, 10 digits)
-        const firstDigit = Math.floor(Math.random() * 4) + 6;
-        const rest = Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
-        student.phone = `${firstDigit}${rest}`;
-        await student.save();
-      }
-      console.log('Phone number seeding complete.');
-    }
-  } catch (err) {
-    console.error('Phone seeding error:', err.message);
-  }
-};
+const seedCandidates = require('./seedData');
 
 const startInMemoryDB = async () => {
   try {
@@ -116,9 +44,7 @@ const startInMemoryDB = async () => {
     await mongoose.connect(uri);
     console.log(`Fallback: Connected to In-Memory MongoDB at ${uri}`);
     console.log("WARNING: Data will be lost when server restarts.");
-    await seedSampleData();
-    // Also try to seed phone numbers for any non-sample users if they exist (unlikely in pure in-memory start, but good for consistency)
-    await seedPhoneNumbers();
+    await seedCandidates(User);
   } catch (fallbackErr) {
     console.error(`Fallback failed: ${fallbackErr.message}`);
   }
@@ -138,8 +64,7 @@ const connectDB = async () => {
   try {
     const conn = await mongoose.connect(mongoURI);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
-    await seedPhoneNumbers();
-    await seedSampleData();
+    await seedCandidates(User);
   } catch (err) {
     console.error(`MongoDB connection error: ${err.message}`);
     console.log("Attempting to start In-Memory MongoDB fallback...");
