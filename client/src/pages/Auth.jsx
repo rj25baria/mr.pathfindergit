@@ -14,6 +14,7 @@ const Auth = () => {
     name: '',
     email: '',
     phone: '',
+    contactNumber: '',
     password: '',
     dateOfBirth: '',
     role: 'student',
@@ -68,6 +69,14 @@ const Auth = () => {
             return toast.error('Phone number must be exactly 10 digits');
         }
 
+        // Optional alternate contact validation
+        if (formData.contactNumber && formData.contactNumber.trim()) {
+            const contactClean = formData.contactNumber.replace(/\D/g, '');
+            if (contactClean.length !== 10) {
+                return toast.error('Contact number must be exactly 10 digits');
+            }
+        }
+
         if (formData.role === 'student' && !formData.consent) {
             return toast.error('Please agree to the Terms and Conditions');
         }
@@ -88,17 +97,41 @@ const Auth = () => {
         const res = await api.post(endpoint, formData);
         
         if (res.data.success) {
-            toast.success(isLogin ? 'Login Successful' : 'Account Created!', { id: loader });
-            
-            if (res.data.token) {
-                localStorage.setItem('token', res.data.token);
-                localStorage.setItem('user', JSON.stringify(res.data.user));
-            }
+            if (isLogin) {
+                // Login flow - redirect to dashboard
+                toast.success('Login Successful', { id: loader });
+                
+                if (res.data.token) {
+                    localStorage.setItem('token', res.data.token);
+                    localStorage.setItem('user', JSON.stringify(res.data.user));
+                }
 
-            setTimeout(() => {
-                const target = res.data.user.role === 'hr' ? '/hr-dashboard' : '/dashboard';
-                navigate(target);
-            }, 1000);
+                setTimeout(() => {
+                    const target = res.data.user.role === 'hr' ? '/hr-dashboard' : '/dashboard';
+                    navigate(target);
+                }, 1000);
+            } else {
+                // Signup flow - redirect to login page
+                toast.success('Account Created! Please login with your credentials.', { id: loader });
+                
+                setTimeout(() => {
+                    setIsLogin(true);
+                    setFormData({
+                        name: '',
+                        email: '',
+                        phone: '',
+                        contactNumber: '',
+                        password: '',
+                        dateOfBirth: '',
+                        role: 'student',
+                        education: '10th Pass',
+                        interests: 'Artificial Intelligence',
+                        careerGoal: '',
+                        consent: false,
+                        captchaAnswer: ''
+                    });
+                }, 1000);
+            }
         }
     } catch (err) {
         console.error(err);
@@ -166,7 +199,7 @@ const Auth = () => {
                                     />
                                     
                                     {/* PHONE NUMBER - EXPLICITLY HERE */}
-                                    <div className="col-span-2">
+                                    <div className="col-span-1">
                                         <label className="text-xs font-bold text-indigo-600 uppercase mb-1 block">Mobile Number</label>
                                         <input 
                                             name="phone"
@@ -177,6 +210,19 @@ const Auth = () => {
                                             className="w-full p-3 bg-white border-2 border-indigo-100 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition font-medium"
                                             maxLength={10}
                                             required
+                                        />
+                                    </div>
+
+                                    <div className="col-span-1">
+                                        <label className="text-xs font-bold text-indigo-600 uppercase mb-1 block">Contact Number (Optional)</label>
+                                        <input 
+                                            name="contactNumber"
+                                            type="tel"
+                                            placeholder="Alternate contact"
+                                            value={formData.contactNumber}
+                                            onChange={handleChange}
+                                            className="w-full p-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                                            maxLength={10}
                                         />
                                     </div>
 

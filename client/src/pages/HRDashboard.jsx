@@ -11,6 +11,7 @@ const HRDashboard = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, ready: 0, streak: 0 });
+  const [alerts, setAlerts] = useState([]);
   const [isEditingPhone, setIsEditingPhone] = useState(false);
   const [phoneInput, setPhoneInput] = useState('');
   const [isEditingEmail, setIsEditingEmail] = useState(false);
@@ -18,7 +19,17 @@ const HRDashboard = () => {
 
   useEffect(() => {
     fetchCandidates();
+    fetchAlerts();
   }, []);
+
+  const fetchAlerts = async () => {
+    try {
+      const res = await api.get('/api/hr/alerts');
+      setAlerts(res.data.data || []);
+    } catch (err) {
+      console.error('Failed to fetch alerts', err?.response?.data || err);
+    }
+  };
 
   useEffect(() => {
     if (selectedCandidate) {
@@ -145,16 +156,6 @@ const HRDashboard = () => {
   return (
     <div className="space-y-8 relative">
       {/* Stats Overview */}
-      <div className="flex justify-end">
-        <button 
-            onClick={handleResetSystem}
-            className="flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-lg hover:bg-red-200 transition text-sm font-medium"
-        >
-            <RefreshCw size={16} />
-            Reset System Data
-        </button>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
            <div>
@@ -258,6 +259,10 @@ const HRDashboard = () => {
                         </button>
                     </div>
                   )}
+                </p>
+                <p className="opacity-90 flex items-center gap-2 mt-1 text-sm">
+                  <Phone size={14} /> 
+                  <span className="font-semibold">Alternate:</span> {selectedCandidate.contactNumber || 'Not provided'}
                 </p>
                 <p className="text-sm opacity-75 mt-1 flex items-center gap-2"><Briefcase size={16} /> {selectedCandidate.education || 'Education not specified'}</p>
               </div>
@@ -413,72 +418,98 @@ const HRDashboard = () => {
           </button>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-4 font-semibold text-gray-600 uppercase text-xs">Candidate</th>
-                  <th className="px-6 py-4 font-semibold text-gray-600 uppercase text-xs">Score</th>
-                  <th className="px-6 py-4 font-semibold text-gray-600 uppercase text-xs">Skills</th>
-                  <th className="px-6 py-4 font-semibold text-gray-600 uppercase text-xs">Goal</th>
-                  <th className="px-6 py-4 font-semibold text-gray-600 uppercase text-xs text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {candidates.map((candidate, index) => (
-                  <tr key={candidate._id} className="hover:bg-gray-50 transition cursor-pointer" onClick={() => setSelectedCandidate(candidate)}>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-indigo-100 p-2 rounded-full text-indigo-600">
-                           <User size={20} />
-                        </div>
-                        <div>
-                           <p className="font-bold text-gray-900">{candidate.name}</p>
-                           <p className="text-xs text-gray-500 flex items-center gap-1"><Mail size={12} /> {candidate.email}</p>
-                           <p className="text-xs text-gray-500 flex items-center gap-1">
-                             <Phone size={12} /> 
-                             {candidate.phone ? (
-                               <a href={`tel:${candidate.phone}`} className="hover:text-indigo-600 hover:underline" onClick={(e) => e.stopPropagation()}>
-                                 {candidate.phone}
-                               </a>
-                             ) : <span className="italic opacity-70">No phone</span>}
-                           </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded text-xs font-bold ${getScoreColor(candidate.readinessScore)}`}>
-                        {candidate.readinessScore}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1">
-                        {candidate.interests.slice(0, 2).map((int, i) => (
-                           <span key={i} className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded border border-gray-200">{int}</span>
-                        ))}
-                        {candidate.interests.length > 2 && (
-                           <span className="text-xs text-gray-500">+{candidate.interests.length - 2}</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
-                       {candidate.careerGoal}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                       <button 
-                         onClick={(e) => { e.stopPropagation(); handleDelete(candidate._id); }}
-                         className="text-red-500 hover:bg-red-50 p-2 rounded transition"
-                         title="Remove Candidate"
-                       >
-                         <Trash2 size={18} />
-                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {candidates.map((candidate) => (
+            <div key={candidate._id} className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg hover:border-indigo-200 transition transform hover:scale-105">
+              {/* Card Header with Score Badge */}
+              <div className="relative p-6 bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-100">
+                <div className="absolute top-4 right-4">
+                  <span className={`px-3 py-1 rounded-full text-sm font-bold ${getScoreColor(candidate.readinessScore)}`}>
+                    Score: {candidate.readinessScore}
+                  </span>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-indigo-600 p-3 rounded-full text-white">
+                    <User size={24} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900">{candidate.name}</h3>
+                    <p className="text-sm text-gray-600">{candidate.education || 'Education not specified'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card Content */}
+              <div className="p-6 space-y-4">
+                {/* Email */}
+                <div>
+                  <p className="text-xs font-bold text-gray-500 uppercase mb-1">EMAIL</p>
+                  <a href={`mailto:${candidate.email}`} className="text-sm text-indigo-600 hover:underline break-all">
+                    {candidate.email}
+                  </a>
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <p className="text-xs font-bold text-gray-500 uppercase mb-1">PHONE</p>
+                  {candidate.phone ? (
+                    <a href={`tel:${candidate.phone}`} className="text-sm text-indigo-600 hover:underline font-medium">
+                      {candidate.phone}
+                    </a>
+                  ) : (
+                    <p className="text-sm text-gray-400 italic">Not provided</p>
+                  )}
+                </div>
+
+                {/* Contact Number */}
+                {candidate.contactNumber && (
+                  <div>
+                    <p className="text-xs font-bold text-gray-500 uppercase mb-1">ALTERNATE</p>
+                    <p className="text-sm text-gray-700 font-medium">{candidate.contactNumber}</p>
+                  </div>
+                )}
+
+                {/* Career Goal */}
+                <div>
+                  <p className="text-xs font-bold text-gray-500 uppercase mb-1">CAREER GOAL</p>
+                  <p className="text-sm text-gray-700">{candidate.careerGoal || 'Not specified'}</p>
+                </div>
+
+                {/* Interests */}
+                <div>
+                  <p className="text-xs font-bold text-gray-500 uppercase mb-2">INTERESTS</p>
+                  <div className="flex flex-wrap gap-2">
+                    {candidate.interests && candidate.interests.length > 0 ? (
+                      candidate.interests.map((interest, idx) => (
+                        <span key={idx} className="bg-indigo-50 text-indigo-700 text-xs px-2 py-1 rounded-full border border-indigo-100">
+                          {interest}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-xs text-gray-400 italic">No interests specified</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Card Footer with Actions */}
+              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex gap-2">
+                <button
+                  onClick={() => setSelectedCandidate(candidate)}
+                  className="flex-1 bg-indigo-600 text-white py-2 rounded-lg font-bold hover:bg-indigo-700 transition text-sm"
+                >
+                  View Profile
+                </button>
+                <button
+                  onClick={() => handleDelete(candidate._id)}
+                  className="bg-red-50 text-red-600 px-3 py-2 rounded-lg hover:bg-red-100 transition"
+                  title="Remove candidate"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const CandidateAlert = require('../models/CandidateAlert');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -38,7 +39,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 exports.register = async (req, res) => {
   try {
     const { 
-        name, email, phone, password, role, 
+        name, email, phone, contactNumber, password, role, 
         education, interests, careerGoal,
         dateOfBirth, consent 
     } = req.body;
@@ -58,6 +59,15 @@ exports.register = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Please enter a valid 10-digit phone number.' });
     }
 
+    // Optional Contact Number validation
+    let contactClean;
+    if (contactNumber) {
+        contactClean = (contactNumber || '').replace(/\D/g, '');
+        if (contactClean.length !== 10) {
+            return res.status(400).json({ success: false, message: 'Please enter a valid 10-digit contact number.' });
+        }
+    }
+
     // 2. Check Duplicates
     const userExists = await User.findOne({ email: email.toLowerCase() });
     if (userExists) {
@@ -73,6 +83,7 @@ exports.register = async (req, res) => {
       name,
       email: email.toLowerCase(),
       phone: phoneClean,
+      contactNumber: contactClean,
       password: hashedPassword,
       role: role || 'student',
       
@@ -87,6 +98,21 @@ exports.register = async (req, res) => {
       readinessScore: 50, // Start with some score
       streak: 1
     });
+
+    // Notify HR portal by creating a candidate alert so HR users see new signups
+    try {
+        if (user.role === 'student') {
+            await CandidateAlert.create({
+                userId: user._id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                contactNumber: user.contactNumber
+            });
+        }
+    } catch (alertErr) {
+        console.error('Candidate alert create error:', alertErr);
+    }
 
     sendTokenResponse(user, 201, res);
 

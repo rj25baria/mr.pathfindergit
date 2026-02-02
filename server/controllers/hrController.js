@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const CandidateAlert = require('../models/CandidateAlert');
 const seedCandidates = require('../seedData');
 
 exports.searchCandidates = async (req, res) => {
@@ -14,7 +15,7 @@ exports.searchCandidates = async (req, res) => {
 
     let query = { role: 'student' };
     
-    if (skill) {
+    if (skill && skill.trim()) {
       const regex = new RegExp(skill, 'i');
       query.$or = [
         { name: regex },        // Search by Name
@@ -23,13 +24,13 @@ exports.searchCandidates = async (req, res) => {
       ];
     }
     
-    if (minScore) {
+    if (minScore && minScore.trim()) {
       query.readinessScore = { $gte: parseInt(minScore) };
     }
     
     // Use lean() for faster read performance
     const candidates = await User.find(query)
-      .select('-password +phone')
+      .select('-password')
       .sort({ readinessScore: -1 })
       .lean();
       
@@ -65,6 +66,43 @@ exports.resetCandidates = async (req, res) => {
         await User.deleteMany({ role: 'student' });
         await seedCandidates(User);
         res.status(200).json({ success: true, message: 'Candidates reset and re-seeded successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+// Fetch candidate alerts (recent signups forwarded to HR)
+exports.getAlerts = async (req, res) => {
+    try {
+        const alerts = await CandidateAlert.find().sort({ createdAt: -1 }).lean();
+        res.status(200).json({ success: true, count: alerts.length, data: alerts });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+// Debug: Get all students (no auth required for testing)
+exports.getAllStudents = async (req, res) => {
+    try {
+        const students = await User.find({ role: 'student' })
+            .lean();
+        console.log(`Debug: Found ${students.length} students in database`);
+        res.status(200).json({ success: true, count: students.length, data: students });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+// Accept external notifications (simple endpoint to forward student info to HR alerts)
+exports.notifyCandidate = async (req, res) => {
+    try {
+        const { name, email, phone, contactNumber, userId } = req.body;
+        if (!email || !name) return res.status(400).json({ success: false, message: 'Missing required fields' });
+        const alert = await CandidateAlert.create({ name, email, phone, contactNumber, userId });
+        res.status(201).json({ success: true, data: alert });
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, message: 'Server Error' });
