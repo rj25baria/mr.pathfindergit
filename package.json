@@ -1,0 +1,14 @@
+{
+  "name": "mr-pathfinder",
+  "version": "1.0.0",
+  "description": "Career Coaching Platform",
+  "scripts": {
+    "install-all": "npm install && cd client && npm install && cd ../server && npm install",
+    "build": "cd client && npm run build && cd ../server && npm install",
+    "dev": "concurrently \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "start": "npm --prefix server start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
