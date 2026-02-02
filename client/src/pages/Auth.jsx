@@ -131,6 +131,9 @@ const Auth = () => {
               onChange={handleChange}
               className="w-full p-3 border rounded"
               required
+              pattern="[0-9]{10}"
+              maxLength={10}
+              title="Please enter a valid 10-digit phone number"
             />
             
             {/* Role Selection */}

@@ -118,7 +118,11 @@ const HRDashboard = () => {
                 <p className="opacity-90 flex items-center gap-2"><Mail size={16} /> {selectedCandidate.email}</p>
                 <p className="opacity-90 flex items-center gap-2 mt-1">
                   <Phone size={16} /> 
-                  {selectedCandidate.phone || <span className="italic opacity-75">No phone provided</span>}
+                  {selectedCandidate.phone ? (
+                    <a href={`tel:${selectedCandidate.phone}`} className="hover:underline text-white">
+                      {selectedCandidate.phone}
+                    </a>
+                  ) : <span className="italic opacity-75">No phone provided</span>}
                 </p>
                 <p className="text-sm opacity-75 mt-1 flex items-center gap-2"><Briefcase size={16} /> {selectedCandidate.education || 'Education not specified'}</p>
               </div>
@@ -292,7 +296,11 @@ const HRDashboard = () => {
                            <p className="text-xs text-gray-500 flex items-center gap-1"><Mail size={12} /> {candidate.email}</p>
                            <p className="text-xs text-gray-500 flex items-center gap-1">
                              <Phone size={12} /> 
-                             {candidate.phone ? candidate.phone : <span className="italic opacity-70">No phone</span>}
+                             {candidate.phone ? (
+                               <a href={`tel:${candidate.phone}`} className="hover:text-indigo-600 hover:underline" onClick={(e) => e.stopPropagation()}>
+                                 {candidate.phone}
+                               </a>
+                             ) : <span className="italic opacity-70">No phone</span>}
                            </p>
                         </div>
                       </div>
