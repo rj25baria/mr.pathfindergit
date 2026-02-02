@@ -319,6 +319,18 @@ const Auth = () => {
                         required
                     />
 
+                    {/* --- FORGOT PASSWORD (LOGIN ONLY) --- */}
+                    {isLogin && (
+                        <div className="text-right">
+                            <a 
+                                href="mailto:support@mrpathfinder.com?subject=Password Reset Request"
+                                className="text-sm text-indigo-600 hover:text-indigo-700 font-semibold hover:underline transition"
+                            >
+                                Forgot Password?
+                            </a>
+                        </div>
+                    )}
+
                     {/* --- CAPTCHA & CONSENT --- */}
                     {!isLogin && (
                         <div className="bg-indigo-50 p-4 rounded-xl space-y-3">
