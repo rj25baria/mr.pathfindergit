@@ -108,7 +108,7 @@ mr-pathfinder/
 
 ## 🚀 Quick Start (Local Setup)
 
-git clone https://github.com/rj25baria/mr-pathfindergit.git
+git clone https://github.com/rj25baria/mr.pathfindergit.git
 cd mr-pathfindergit
 Backend
 cd server
@@ -171,7 +171,7 @@ Analytics dashboard
 Email & SMS notifications
 
 👨‍💻 Repository
-https://github.com/rj25baria/mr-pathfindergit
+https://github.com/rj25baria/mr.pathfindergit.git
 
 Status: Hackathon Ready 🚀
 Last Updated: 4 February 2026
