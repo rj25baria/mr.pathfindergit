@@ -1,4 +1,4 @@
-# 🎓 Mr. Pathfinder – Career Coaching Platform
+# 🎓 Mr. Pathfinder – Carrer guiding platform
 
 A full-stack career coaching and talent discovery platform that helps students prepare for their careers and enables HR teams to discover job-ready candidates efficiently.
 
