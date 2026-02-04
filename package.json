@@ -4,9 +4,24 @@
   "description": "Career Coaching Platform",
   "scripts": {
     "install-all": "npm install && cd client && npm install && cd ../server && npm install",
-    "build": "cd client && npm run build && cd ../server && npm install",
+    "vercel-build": "cd client && npm install && npm run build",
+    "build": "cd client && npm run build",
     "dev": "concurrently \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
     "start": "npm --prefix server start"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "google-auth-library": "^10.5.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb-memory-server": "^11.0.1",
+    "mongoose": "^9.1.5",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
