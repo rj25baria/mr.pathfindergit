@@ -19,8 +19,14 @@ const getApiUrl = () => {
     return `http://${window.location.hostname}:5000`;
   }
 
-  // 3️⃣ Fail fast instead of silent bug
-  throw new Error('❌ API URL not configured - Please set VITE_API_URL');
+  // 3️⃣ Production / Fallback
+  // Instead of crashing, we log a warning and return an empty string.
+  // This allows the UI to load (white screen fix) even if API calls fail.
+  if (!import.meta.env.VITE_API_URL) {
+    console.error('⚠️ VITE_API_URL is missing! API calls will fail.');
+  }
+  
+  return '';
 };
 
 export const API_URL = getApiUrl();
