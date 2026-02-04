@@ -1,141 +1,108 @@
-🎓 Mr. Pathfinder — Career Coaching & Talent Discovery Platform
-
-Mr. Pathfinder is a full-stack career coaching and talent discovery platform that helps students prepare for their careers while enabling HR teams to discover, evaluate, and connect with job-ready candidates efficiently.
-
-📌 Overview
-
-Mr. Pathfinder bridges the gap between students and recruiters by combining:
-
-Career readiness tracking
-
-Skill-based profiling
-
-HR-focused candidate dashboards
-
-Secure role-based authentication
-
-Designed to be beginner-friendly, scalable, and production-ready.
-
-📋 Table of Contents
-
-Features
-
-Tech Stack
-
-Project Structure
-
-Quick Start
-
-Deployment
-
-API Reference
-
-Test Credentials
-
-Troubleshooting
-
-Future Roadmap
-
-✨ Features
-👨‍🎓 Student Portal
-
-Secure signup & login
-
-Primary & alternate contact number management
-
-Career readiness score (0–100)
-
-Skill & technology interest tracking
-
-Career goal definition
-
-Profile editing (education, interests, goals)
-
-Fully responsive dashboard
-
-👔 HR / Recruiter Portal
-
-Role-based secure login
-
-Candidate discovery by skill & readiness score
-
-Modern card-based candidate grid
-
-Quick email & call actions
-
-Detailed candidate profile modal
-
-Alternate contact number visibility
-
-Candidate removal & management
-
-Recent signup alerts
-
-Statistics dashboard (total candidates, job-ready count)
-
-🌐 Platform Features
-
-JWT-based authentication
-
-Role-based access control (Student / HR)
-
-Secure CORS configuration
-
-Responsive UI for all devices
-
-Sample seeded data for testing
-
-Clean UI ready for dark/light mode extension
-
-🛠 Tech Stack
-Frontend
-
-React 19
-
-Vite
-
-Tailwind CSS
-
-React Router
-
-Axios
-
-React Hot Toast
-
-Lucide Icons
-
-Framer Motion (animation-ready)
-
-Backend
-
-Node.js
-
-Express 5
-
-MongoDB & MongoDB Atlas
-
-Mongoose
-
-JWT Authentication
-
-bcryptjs
-
-CORS enabled API
-
-Deployment & DevOps
-
-Vercel (Frontend)
-
-Render (Backend)
-
-MongoDB Atlas (Database)
-
-GitHub (CI/CD & version control)
-
-📁 Project Structure
-mr.pathfinder/
-├── client/            # React frontend
-├── server/            # Express backend
+# 🎓 Mr. Pathfinder – Career Coaching Platform
+
+A full-stack career coaching and talent discovery platform that helps students prepare for their careers and enables HR teams to discover job-ready candidates efficiently.
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Node.js](https://img.shields.io/badge/node.js-18+-green)
+![React](https://img.shields.io/badge/react-19+-blue)
+![License](https://img.shields.io/badge/license-ISC-gray)
+
+---
+
+## 📑 Table of Contents
+
+- Features
+- Tech Stack
+- Project Structure
+- Quick Start
+- Deployment
+- API Reference
+- Test Credentials
+- Troubleshooting
+- Future Enhancements
+
+---
+
+## ✨ Features
+
+### 👨‍🎓 Student Features
+- User authentication (Signup / Login)
+- Primary & alternate contact number support
+- Career readiness score (0–100)
+- Skill & technology interests
+- Career goal tracking
+- Profile management
+- Responsive dashboard
+
+### 👔 HR / Recruiter Features
+- Secure HR login
+- Candidate search & filtering
+- Card-based candidate grid
+- View detailed student profiles
+- Click-to-call & email actions
+- Alternate contact number visibility
+- Recent signup alerts
+- Candidate management (remove/view)
+
+### 🌐 Platform Features
+- JWT-based authentication
+- Role-based access control
+- CORS enabled backend
+- Responsive UI
+- Sample seeded data
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- React 19
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
+- React Hot Toast
+- Lucide React
+- Framer Motion (ready)
+
+### Backend
+- Node.js
+- Express 5
+- MongoDB
+- Mongoose
+- JWT
+- bcryptjs
+- CORS
+
+### Deployment
+- Vercel (Frontend)
+- Render (Backend)
+- MongoDB Atlas
+- GitHub
+
+---
+
+## 📁 Project Structure
+
+mr-pathfinder/
+├── client/
+│ ├── src/
+│ │ ├── components/
+│ │ ├── pages/
+│ │ ├── utils/
+│ │ ├── App.jsx
+│ │ └── main.jsx
+│ ├── package.json
+│ └── vite.config.js
+│
+├── server/
+│ ├── models/
+│ ├── controllers/
+│ ├── routes/
+│ ├── middleware/
+│ ├── server.js
+│ └── package.json
+│
 ├── DEPLOYMENT_GUIDE.md
 ├── VERCEL_RENDER_DEPLOYMENT.md
 ├── vercel.json
@@ -143,18 +110,17 @@ mr.pathfinder/
 └── .gitignore
 
 
-(Well-structured and scalable for future expansion.)
+---
 
-🚀 Quick Start (Local Setup)
-Prerequisites
+## 🚀 Quick Start
 
-Node.js 18+
+### Prerequisites
+- Node.js 18+
+- npm
+- MongoDB Atlas account
 
-npm / yarn
+### Clone Repository
 
-MongoDB Atlas account
-
-Clone Repository
 git clone https://github.com/rj25baria/mr-pathfindergit.git
 cd mr-pathfindergit
 
@@ -169,14 +135,14 @@ cd client
 npm install
 npm run dev
 
-Access
+Access URLs
 
 Frontend: http://localhost:5173
 
 Backend: http://localhost:5000
 
 📦 Deployment
-Recommended Setup
+Recommended
 
 Frontend: Vercel
 
@@ -184,23 +150,15 @@ Backend: Render
 
 Database: MongoDB Atlas
 
-Refer to:
+Required Environment Variables
+VITE_API_URL=
+MONGODB_URI=
+JWT_SECRET=
 
-VERCEL_RENDER_DEPLOYMENT.md
 
-DEPLOYMENT_GUIDE.md
+Ensure CORS allows the frontend domain.
 
-Important checklist
-
-Environment variables configured
-
-VITE_API_URL set in frontend
-
-CORS allows frontend domain
-
-MongoDB Atlas IP whitelist enabled
-
-🔌 API Reference (Sample)
+🔌 API Reference
 Register User
 POST /api/auth/register
 
@@ -213,76 +171,69 @@ POST /api/hr/search
 View Candidate Profile
 GET /api/hr/candidate/:id
 
-🔐 Test Credentials (Updated)
-👩‍💼 HR Portal
+🔐 Test Credentials
+HR Login
 
 Email: zoya3@gmail.com
 Password: password123
 
-➡️ Redirects to /hr-dashboard
+Redirects to /hr-dashboard
 
-🎓 Student Login
+Student Login
 
 Email: jaya23@gmail.com
 Password: abc@1234
 
-➡️ Redirects to /dashboard
+Redirects to /dashboard
 
 🐛 Troubleshooting
-Frontend shows “Server Error”
+Frontend shows server error
 
-Verify VITE_API_URL
+Check VITE_API_URL
 
-Check backend deployment status
+Verify backend deployment
 
-Inspect Network tab for failed API calls
+Check browser Network tab
 
 Confirm CORS configuration
 
-MongoDB issues
+MongoDB connection failed
 
-Check Atlas connection string
+Verify MongoDB Atlas URI
 
-Verify IP whitelist
+Check IP whitelist (0.0.0.0/0)
 
-Confirm DB user credentials
+Confirm database credentials
 
-Login problems
+Login not working
 
 Clear browser storage
 
 Verify JWT secret
 
-Ensure user exists in DB
+Ensure user exists in database
 
-🧭 Future Roadmap
+🚀 Future Enhancements
 
-AI-based career recommendations
+AI-based career guidance
 
-Resume analysis & feedback
+Resume analysis
 
-Job matching engine
+Job matching system
 
 Email & SMS notifications
 
-Interview preparation modules
-
 Analytics dashboard
 
-Premium plans & payments
+Premium plans
 
-🤝 Contributing
-
-Pull requests are welcome.
-For major changes, please open an issue first.
-
-📝 License
+📄 License
 
 ISC License
 
-📎 Repository
+🔗 Repository
 
-GitHub: https://github.com/rj25baria/mr-pathfindergit
+https://github.com/rj25baria/mr-pathfindergit
 
-Status: ✅ Production Ready
+Status: Production Ready
 Last Updated: February 2026
