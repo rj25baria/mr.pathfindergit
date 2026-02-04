@@ -134,8 +134,23 @@ const Auth = () => {
             }
         }
     } catch (err) {
-        console.error(err);
-        toast.error(err.response?.data?.message || 'Server Error', { id: loader });
+        console.error('Signup Error:', err);
+        
+        let errorMsg = 'Server Error';
+        
+        if (!err.response) {
+            // Network Error (CORS or Offline)
+            errorMsg = 'Network Error: Cannot reach server. Please check your connection.';
+        } else if (err.response.status === 404) {
+            // Wrong API URL
+            errorMsg = 'Error 404: API Endpoint not found. Please contact support.';
+        } else if (err.response.data?.message) {
+            // Backend Error Message
+            errorMsg = err.response.data.message;
+        }
+
+        toast.error(errorMsg, { id: loader });
+        
         if (!isLogin) generateCaptcha();
     } finally {
         setLoading(false);

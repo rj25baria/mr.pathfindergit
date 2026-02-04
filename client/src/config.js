@@ -20,13 +20,10 @@ const getApiUrl = () => {
   }
 
   // 3️⃣ Production / Fallback
-  // Instead of crashing, we log a warning and return an empty string.
-  // This allows the UI to load (white screen fix) even if API calls fail.
-  if (!import.meta.env.VITE_API_URL) {
-    console.error('⚠️ VITE_API_URL is missing! API calls will fail.');
-  }
-  
-  return '';
+  // If VITE_API_URL is missing in Vercel, fallback to the known Render URL.
+  // This ensures the app works even if the user forgets to set the environment variable.
+  console.warn('⚠️ VITE_API_URL not found. Falling back to default Render URL.');
+  return 'https://mr-pathfinder.onrender.com';
 };
 
 export const API_URL = getApiUrl();
