@@ -1,51 +1,99 @@
-# Test Credentials
+🔐 Test Credentials
+👩‍💼 HR Portal Login
 
-## HR Portal Login
-**Email:** `hr@demo.com`  
-**Password:** `password123`
+Email: zoya3@gmail.com
+Password: password123
 
-After login, you'll be redirected to `/hr-dashboard` where you can:
-- View all student candidates in card grid format
-- Search and filter candidates
-- View detailed student profiles with contact information
-- See recent signup alerts
+➡️ After login, HR is redirected to /hr-dashboard, where they can:
 
-## Student Login (Sample)
-**Email:** `rahul.demo@example.com`  
-**Password:** `password123`
+View all student candidates in a modern card grid layout
 
-After login, you'll be redirected to `/dashboard` for the student portal.
+Search and filter candidates easily
 
-## Key Features Implemented
+Open detailed student profiles with full contact info
 
-### Auth Page Updates
-✅ **Contact Number Field** - Added optional contact number field in signup form
-✅ **Signup Redirect** - After signup, users are redirected to login page instead of dashboard
-✅ **HR Login Support** - Demo HR user is auto-seeded for testing
-✅ **Form Validation** - Phone and contact numbers must be 10 digits
+View recent signup alerts in real time
 
-### HR Dashboard
-✅ **Card Grid Layout** - Candidates displayed in beautiful card format with:
-  - Score badge
-  - Email (clickable)
-  - Phone (clickable)
-  - **Alternate Contact Number** display
-  - Career Goal
-  - Interests as tags
-  - View Profile & Remove buttons
+🎓 Student Login (Sample)
 
-✅ **View Profile Modal** - Shows complete details including:
-  - Primary phone number (editable)
-  - **Alternate contact number**
-  - Email (editable)
-  - Education
-  - Career goal
-  - Badges & achievements
-  - Contact action buttons
+Email: jaya23@gmail.com
+Password: abc@1234
 
-✅ **Recent Signups Alert** - Shows 6 most recent student signups forwarded to HR
+➡️ After login, students are redirected to /dashboard (Student Portal).
 
-### Candidate Alerts
-✅ When a student signs up, their info is automatically sent to HR portal
-✅ HR can see recent signups in the alerts panel
-✅ Includes: Name, Email, Phone, Contact Number
+🚀 Key Features Implemented
+🔑 Authentication Enhancements
+
+✅ Alternate Contact Number Field
+– Optional field added during signup
+
+✅ Signup Redirect Flow
+– Users are redirected to Login page after signup (not dashboard)
+
+✅ HR Login Support
+– Demo HR account pre-configured for testing
+
+✅ Form Validation
+– Phone & alternate contact numbers must be exactly 10 digits
+
+🧑‍💼 HR Dashboard Features
+📇 Candidate Card Grid
+
+Candidates are displayed in a clean, responsive card layout, showing:
+
+🎯 Score badge
+
+📧 Email (clickable)
+
+📞 Phone number (clickable)
+
+☎️ Alternate contact number
+
+🎓 Education
+
+🎯 Career goal
+
+🏷️ Interests shown as tags
+
+🔘 View Profile & Remove buttons
+
+🪟 View Profile Modal
+
+- A detailed profile popup with:
+
+- Editable primary phone number
+
+- Alternate contact number
+
+- Editable email
+
+- Education details
+
+- Career goals
+
+- Badges & achievements
+
+- Quick contact action buttons
+
+🔔 Recent Signup Alerts
+
+✅ Displays last 6 student signups sent automatically to HR
+✅ Helps HR respond quickly to new candidates
+
+Each alert includes:
+
+- Name
+
+- Email
+
+- Phone number
+
+- Alternate contact number
+
+🔄 Candidate Auto-Sync
+
+✅ When a student signs up:
+
+- Their details are automatically forwarded to the HR portal
+
+- HR sees them instantly in alerts + candidate list
