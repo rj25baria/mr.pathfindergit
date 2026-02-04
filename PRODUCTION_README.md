@@ -1,349 +1,288 @@
-# 🎓 Mr. Pathfinder - Career Coaching Platform
+🎓 Mr. Pathfinder — Career Coaching & Talent Discovery Platform
 
-> A beginner-friendly career coaching platform designed to guide students through their professional journey.
+Mr. Pathfinder is a full-stack career coaching and talent discovery platform that helps students prepare for their careers while enabling HR teams to discover, evaluate, and connect with job-ready candidates efficiently.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![Node.js](https://img.shields.io/badge/node.js-18+-green)
-![React](https://img.shields.io/badge/react-19+-blue)
-![License](https://img.shields.io/badge/license-ISC-gray)
+📌 Overview
 
----
+Mr. Pathfinder bridges the gap between students and recruiters by combining:
 
-## 📋 Table of Contents
+Career readiness tracking
 
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
-- [Quick Start](#-quick-start)
-- [Deployment](#-deployment)
-- [API Documentation](#-api-documentation)
-- [Testing Credentials](#-testing-credentials)
-- [Troubleshooting](#-troubleshooting)
+Skill-based profiling
 
----
+HR-focused candidate dashboards
 
-## ✨ Features
+Secure role-based authentication
 
-### 👨‍🎓 For Students
-- ✅ **User Authentication** - Secure signup/login with email and password
-- ✅ **Contact Number Tracking** - Maintain both primary and alternate contact numbers
-- ✅ **Readiness Assessment** - Track career readiness on a 0-100 scale
-- ✅ **Skill Interests** - Define and track technology interests
-- ✅ **Career Goals** - Set and monitor career objectives
-- ✅ **Responsive Dashboard** - Mobile-friendly student interface
-- ✅ **Profile Management** - Edit education, interests, and goals
+Designed to be beginner-friendly, scalable, and production-ready.
 
-### 👔 For HR/Recruiters
-- ✅ **Candidate Search** - Find talent by skills and minimum readiness score
-- ✅ **Card-Based Grid View** - Modern candidate browsing experience
-- ✅ **Contact Management** - View and manage candidate contact information
-- ✅ **Candidate Profiles** - Detailed view with editable information
-- ✅ **Quick Actions** - Email and call functionality with one-click actions
-- ✅ **Candidate Removal** - Manage candidate database
-- ✅ **Stats Dashboard** - Total candidates, job-ready count, top streaks
+📋 Table of Contents
 
-### 🌐 General
-- ✅ **Dark/Light Mode** - Theme switcher (ready for implementation)
-- ✅ **Responsive Design** - Works on all devices
-- ✅ **CORS Enabled** - Secure cross-origin communication
-- ✅ **JWT Authentication** - Secure token-based auth
-- ✅ **Role-Based Access** - Student and HR different permissions
-- ✅ **Sample Data** - Pre-loaded with 28 beginner-friendly students
+Features
 
----
+Tech Stack
 
-## 🛠 Tech Stack
+Project Structure
 
-### Frontend
-- **React 19** - UI library
-- **Vite** - Build tool & dev server
-- **Tailwind CSS** - Styling
-- **React Router** - Navigation
-- **Axios** - HTTP client
-- **React Hot Toast** - Notifications
-- **Lucide React** - Icons
-- **Framer Motion** - Animations (ready)
+Quick Start
 
-### Backend
-- **Node.js** - Runtime
-- **Express 5** - Web framework
-- **MongoDB** - Primary database
-- **Mongoose** - ODM
-- **MongoDB Memory Server** - In-memory fallback
-- **JWT** - Authentication
-- **bcryptjs** - Password hashing
-- **CORS** - Cross-origin support
+Deployment
 
-### DevOps & Deployment
-- **Vercel** - Frontend hosting
-- **Render** - Backend hosting
-- **GitHub** - Version control & CI/CD
-- **MongoDB Atlas** - Cloud database
+API Reference
 
----
+Test Credentials
 
-## 📁 Project Structure
+Troubleshooting
 
-```
+Future Roadmap
+
+✨ Features
+👨‍🎓 Student Portal
+
+Secure signup & login
+
+Primary & alternate contact number management
+
+Career readiness score (0–100)
+
+Skill & technology interest tracking
+
+Career goal definition
+
+Profile editing (education, interests, goals)
+
+Fully responsive dashboard
+
+👔 HR / Recruiter Portal
+
+Role-based secure login
+
+Candidate discovery by skill & readiness score
+
+Modern card-based candidate grid
+
+Quick email & call actions
+
+Detailed candidate profile modal
+
+Alternate contact number visibility
+
+Candidate removal & management
+
+Recent signup alerts
+
+Statistics dashboard (total candidates, job-ready count)
+
+🌐 Platform Features
+
+JWT-based authentication
+
+Role-based access control (Student / HR)
+
+Secure CORS configuration
+
+Responsive UI for all devices
+
+Sample seeded data for testing
+
+Clean UI ready for dark/light mode extension
+
+🛠 Tech Stack
+Frontend
+
+React 19
+
+Vite
+
+Tailwind CSS
+
+React Router
+
+Axios
+
+React Hot Toast
+
+Lucide Icons
+
+Framer Motion (animation-ready)
+
+Backend
+
+Node.js
+
+Express 5
+
+MongoDB & MongoDB Atlas
+
+Mongoose
+
+JWT Authentication
+
+bcryptjs
+
+CORS enabled API
+
+Deployment & DevOps
+
+Vercel (Frontend)
+
+Render (Backend)
+
+MongoDB Atlas (Database)
+
+GitHub (CI/CD & version control)
+
+📁 Project Structure
 mr.pathfinder/
-├── client/                          # React Frontend
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Navbar.jsx
-│   │   │   └── TrendingTicker.jsx
-│   │   ├── pages/
-│   │   │   ├── Auth.jsx            # Login/Signup
-│   │   │   ├── HRDashboard.jsx     # HR Portal
-│   │   │   ├── StudentDashboard.jsx
-│   │   │   ├── Landing.jsx
-│   │   │   └── Profile.jsx
-│   │   ├── utils/
-│   │   │   ├── api.js              # Axios instance
-│   │   │   └── config.js           # Environment config
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── vite.config.js
-│
-├── server/                          # Express Backend
-│   ├── models/
-│   │   ├── User.js                 # User schema
-│   │   ├── Roadmap.js
-│   │   ├── Feedback.js
-│   │   └── CandidateAlert.js       # Signup alerts
-│   ├── controllers/
-│   │   ├── authController.js       # Auth logic
-│   │   ├── hrController.js         # HR operations
-│   │   └── roadmapController.js
-│   ├── routes/
-│   │   ├── authRoutes.js
-│   │   ├── hrRoutes.js
-│   │   └── feedbackRoutes.js
-│   ├── middleware/
-│   │   └── auth.js                 # JWT verification
-│   ├── seedData.js                 # Sample data (28 students)
-│   ├── server.js                   # Express app
-│   └── package.json
-│
-├── DEPLOYMENT_GUIDE.md             # Traditional deployment guide
-├── VERCEL_RENDER_DEPLOYMENT.md     # Modern deployment guide
-├── vercel.json                     # Vercel configuration
-├── render.yaml                     # Render blueprint
-└── .gitignore                      # Git ignore rules
-```
+├── client/            # React frontend
+├── server/            # Express backend
+├── DEPLOYMENT_GUIDE.md
+├── VERCEL_RENDER_DEPLOYMENT.md
+├── vercel.json
+├── render.yaml
+└── .gitignore
 
----
 
-## 🚀 Quick Start
+(Well-structured and scalable for future expansion.)
 
-### Prerequisites
-- Node.js 18+
-- npm or yarn
-- MongoDB Atlas account (free tier available)
+🚀 Quick Start (Local Setup)
+Prerequisites
 
-### Local Development
+Node.js 18+
 
-1. **Clone Repository**
-   ```bash
-   git clone https://github.com/rj25baria/mr.pathfindergit.git
-   cd mr.pathfindergit
-   ```
+npm / yarn
 
-2. **Backend Setup**
-   ```bash
-   cd server
-   npm install
-   cp .env.example .env  # Configure with your MongoDB URI
-   npm run dev
-   ```
+MongoDB Atlas account
 
-3. **Frontend Setup** (in new terminal)
-   ```bash
-   cd client
-   npm install
-   npm run dev
-   ```
+Clone Repository
+git clone https://github.com/rj25baria/mr-pathfindergit.git
+cd mr-pathfindergit
 
-4. **Access Application**
-   - Frontend: http://localhost:5173
-   - Backend: http://localhost:5000
-   - API Docs: http://localhost:5000/api/
+Backend Setup
+cd server
+npm install
+cp .env.example .env
+npm run dev
 
----
+Frontend Setup
+cd client
+npm install
+npm run dev
 
-## 📦 Deployment
+Access
 
-### Automated Deployment (Recommended)
+Frontend: http://localhost:5173
 
-See [VERCEL_RENDER_DEPLOYMENT.md](./VERCEL_RENDER_DEPLOYMENT.md) for:
-- ✅ Render Blueprint for backend
-- ✅ Vercel for frontend
-- ✅ Environment variable setup
-- ✅ MongoDB Atlas configuration
+Backend: http://localhost:5000
 
-### Manual Deployment
+📦 Deployment
+Recommended Setup
 
-1. **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. **Backend**: [Render](https://render.com/) (Node.js Web Service)
-3. **Frontend**: [Vercel](https://vercel.com/) (React/Vite)
+Frontend: Vercel
 
-**Deployment Checklist:**
-- [ ] MongoDB Atlas cluster created
-- [ ] Database user created with strong password
-- [ ] Network access configured (allow 0.0.0.0/0)
-- [ ] Render backend deployed with environment variables
-- [ ] Vercel frontend deployed with VITE_API_URL set
-- [ ] CORS enabled in backend with frontend URL
-- [ ] Test login functionality
-- [ ] Verify candidate search works
+Backend: Render
 
----
+Database: MongoDB Atlas
 
-## 🔌 API Documentation
+Refer to:
 
-### Authentication Endpoints
+VERCEL_RENDER_DEPLOYMENT.md
 
-#### Signup
-```http
+DEPLOYMENT_GUIDE.md
+
+Important checklist
+
+Environment variables configured
+
+VITE_API_URL set in frontend
+
+CORS allows frontend domain
+
+MongoDB Atlas IP whitelist enabled
+
+🔌 API Reference (Sample)
+Register User
 POST /api/auth/register
-Content-Type: application/json
 
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "phone": "9876543210",
-  "contactNumber": "9999999999",
-  "password": "SecurePass123",
-  "role": "student",
-  "education": "BTech",
-  "interests": ["React", "Node.js"],
-  "careerGoal": "Full Stack Developer"
-}
-```
-
-#### Login
-```http
+Login
 POST /api/auth/login
-Content-Type: application/json
 
-{
-  "email": "john@example.com",
-  "password": "SecurePass123"
-}
-```
-
-### HR Endpoints
-
-#### Search Candidates
-```http
+Search Candidates (HR)
 POST /api/hr/search
-Content-Type: application/json
 
-{
-  "skill": "React",
-  "minScore": 50
-}
-```
-
-#### Get Candidate Alerts
-```http
-GET /api/hr/alerts
-Authorization: Bearer <jwt_token>
-```
-
-#### View Candidate Profile
-```http
+View Candidate Profile
 GET /api/hr/candidate/:id
-Authorization: Bearer <jwt_token>
-```
 
----
+🔐 Test Credentials (Updated)
+👩‍💼 HR Portal
 
-## 🔐 Testing Credentials
+Email: zoya3@gmail.com
+Password: password123
 
-### HR Login
-- **Email:** `hr@demo.com`
-- **Password:** `password123`
+➡️ Redirects to /hr-dashboard
 
-### Sample Students (Included)
-1. **Zoya** - zoya@example.com (Score: 21)
-2. **Om Shukla** - om11@gmail.com (Score: 25)
-3. **Ranjan Baria** - ranjan.baria00@gmail.com (Score: 20)
-4. **Rahul Sharma** - rahul.demo@example.com (Score: 85) - High scorer
-5. **Priya Patel** - priya.p@example.com (Score: 92) - Top scorer
-6. **Vikram Singh** - vikram.s@example.com (Score: 88) - Advanced
+🎓 Student Login
 
-All sample students use password: `password123`
+Email: jaya23@gmail.com
+Password: abc@1234
 
----
+➡️ Redirects to /dashboard
 
-## 🐛 Troubleshooting
+🐛 Troubleshooting
+Frontend shows “Server Error”
 
-### Frontend can't connect to backend
-- Check `VITE_API_URL` environment variable
-- Verify backend is running on port 5000
-- Check CORS configuration in server.js
-- Review browser console for errors
+Verify VITE_API_URL
 
-### MongoDB connection failed
-- Verify MongoDB Atlas connection string in `.env`
-- Check IP whitelist in MongoDB Atlas (allow 0.0.0.0/0)
-- Ensure database user credentials are correct
-- Try local MongoDB as fallback
+Check backend deployment status
 
-### Login not working
-- Clear browser cookies and localStorage
-- Check JWT_SECRET matches between backend and token
-- Verify user exists in database
-- Check password hashing in bcryptjs
+Inspect Network tab for failed API calls
 
-### Build failures on Vercel/Render
-- Check Node.js version (18+ required)
-- Verify all dependencies are in package.json
-- Check build command in vercel.json/render.yaml
-- Review deployment logs in dashboard
+Confirm CORS configuration
 
----
+MongoDB issues
 
-## 🤝 Contributing
+Check Atlas connection string
 
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/AmazingFeature`
-3. Commit changes: `git commit -m 'Add AmazingFeature'`
-4. Push to branch: `git push origin feature/AmazingFeature`
-5. Open a Pull Request
+Verify IP whitelist
 
----
+Confirm DB user credentials
 
-## 📝 License
+Login problems
 
-This project is licensed under the ISC License - see LICENSE file for details.
+Clear browser storage
 
----
+Verify JWT secret
 
-## 👨‍💼 Support
+Ensure user exists in DB
 
-For questions or issues:
-- Open an issue on [GitHub Issues](https://github.com/rj25baria/mr.pathfindergit/issues)
-- Check [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for common issues
-- Review [VERCEL_RENDER_DEPLOYMENT.md](./VERCEL_RENDER_DEPLOYMENT.md) for deployment help
+🧭 Future Roadmap
 
----
+AI-based career recommendations
 
-## 🎯 Future Enhancements
+Resume analysis & feedback
 
-- [ ] Dashboard analytics and insights
-- [ ] Video interview training modules
-- [ ] AI-powered resume review
-- [ ] Job matching algorithm
-- [ ] Company partnership portal
-- [ ] Email notifications
-- [ ] SMS integration
-- [ ] Payment integration for premium features
+Job matching engine
 
----
+Email & SMS notifications
 
-**Repository:** [github.com/rj25baria/mr.pathfindergit](https://github.com/rj25baria/mr.pathfindergit)  
-**Last Updated:** February 2, 2026  
-**Status:** ✅ Production Ready
+Interview preparation modules
+
+Analytics dashboard
+
+Premium plans & payments
+
+🤝 Contributing
+
+Pull requests are welcome.
+For major changes, please open an issue first.
+
+📝 License
+
+ISC License
+
+📎 Repository
+
+GitHub: https://github.com/rj25baria/mr-pathfindergit
+
+Status: ✅ Production Ready
+Last Updated: February 2026
