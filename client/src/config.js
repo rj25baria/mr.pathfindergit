@@ -20,7 +20,7 @@ const getApiUrl = () => {
   }
 
   // 3️⃣ Fail fast instead of silent bug
-  throw new Error('❌ API URL not configured');
+  throw new Error('❌ API URL not configured - Please set VITE_API_URL');
 };
 
 export const API_URL = getApiUrl();
