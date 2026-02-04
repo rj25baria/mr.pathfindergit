@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { Analytics } from '@vercel/analytics/react';
 import Navbar from './components/Navbar';
 
 // Lazy load pages
@@ -39,6 +40,7 @@ function App() {
           </Suspense>
         </div>
       </div>
+      <Analytics />
     </Router>
   );
 }
